@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//e/Projects/React/**)",
+      "Bash(npm create *)",
+      "Bash(cd /tmp)",
+      "Read(//tmp/**)",
+      "Bash(npm install *)"
+    ],
+    "additionalDirectories": [
+      "e:\\Projects\\React\\nhi-alps\\e"
+    ]
+  }
+}
