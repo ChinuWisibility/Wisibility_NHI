@@ -1,0 +1,47 @@
+name: Deploy Infrastructure (Bicep)
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options: [dev, prod]
+
+jobs:
+  deploy-infra:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id:       ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create resource group
+        run: |
+          az group create \
+            --name rg-nhi-alps-${{ inputs.environment }} \
+            --location eastus
+
+      - name: Deploy Bicep
+        run: |
+          az deployment group create \
+            --resource-group rg-nhi-alps-${{ inputs.environment }} \
+            --template-file infra/bicep/main.bicep \
+            --parameters infra/bicep/parameters/${{ inputs.environment }}.bicepparam \
+            --parameters \
+              postgresAdminPassword="${{ secrets.POSTGRES_ADMIN_PASSWORD }}" \
+              jwtSecret="${{ secrets.JWT_SECRET }}" \
+            --output json

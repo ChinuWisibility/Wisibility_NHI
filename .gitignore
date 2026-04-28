@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Secrets — never commit
+.env.production.local
+backend/.env
+backend/prisma/.env
+infra/bicep/parameters/*.local.bicepparam
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

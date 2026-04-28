@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: nhi-alps
+data:
+  NODE_ENV:          "production"
+  PORT:              "4000"
+  # Set by CI/CD from Bicep outputs — override per environment
+  AZURE_TENANT_ID:   ""   # injected by GitHub Actions
+  AZURE_CLIENT_ID:   ""   # injected by GitHub Actions

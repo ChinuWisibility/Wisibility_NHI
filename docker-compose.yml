@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nhi-alps-backend
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: "4000"
+      JWT_SECRET: "nhi-alps-dev-secret-change-in-prod"
+      NODE_ENV: "production"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

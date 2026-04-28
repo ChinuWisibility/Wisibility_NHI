@@ -1,0 +1,197 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── NHI ───────────────────────────────────────────────────────────────────────
+model Nhi {
+  nhiId            String    @id @default(uuid())
+  displayName      String
+  nhiType          String
+  credentialType   String
+  status           String    @default("ACTIVE")
+  riskScore        Int       @default(0)
+  riskLevel        String    @default("LOW")
+  ownerId          String?
+  ownerTeam        String?
+  environment      String
+  privilegeLevel   String
+  breadthScore     Int       @default(0)
+  isShared         Boolean   @default(false)
+  isHardcoded      Boolean   @default(false)
+  vaultPath        String?
+  rotationSchedule String?
+  certExpiry       DateTime?
+  lastDiscovered   DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  sourceConnector  String
+  tags             Json      @default("{}")
+
+  postureIssues PostureIssue[]
+  alerts        Alert[]
+
+  @@index([status])
+  @@index([riskLevel])
+  @@index([environment])
+  @@map("nhi")
+}
+
+// ── Posture ───────────────────────────────────────────────────────────────────
+model PostureIssue {
+  issueId      String    @id @default(uuid())
+  nhiId        String
+  nhiName      String?
+  issueType    String
+  severity     String
+  status       String    @default("OPEN")
+  detectedAt   DateTime  @default(now())
+  remediatedAt DateTime?
+  remediatedBy String?
+  details      Json      @default("{}")
+
+  nhi Nhi @relation(fields: [nhiId], references: [nhiId], onDelete: Cascade)
+
+  @@index([status])
+  @@index([nhiId])
+  @@map("posture_issue")
+}
+
+// ── Alerts ────────────────────────────────────────────────────────────────────
+model Alert {
+  alertId      String    @id @default(uuid())
+  nhiId        String
+  nhiName      String?
+  alertType    String
+  severity     String
+  description  String
+  status       String    @default("OPEN")
+  detectedAt   DateTime  @default(now())
+  resolvedAt   DateTime?
+  assignedTo   String?
+  itsmTicketId String?
+  forensicData Json?
+  timeline     Json      @default("[]")
+
+  nhi Nhi @relation(fields: [nhiId], references: [nhiId], onDelete: Cascade)
+
+  @@index([status])
+  @@index([nhiId])
+  @@map("alert")
+}
+
+// ── Connectors ────────────────────────────────────────────────────────────────
+model ConnectorConfig {
+  connectorId   String    @id @default(uuid())
+  connectorType String
+  displayName   String
+  status        String    @default("PENDING")
+  config        Json      @default("{}")
+  lastTestAt    DateTime?
+  lastRunAt     DateTime?
+  createdAt     DateTime  @default(now())
+
+  discoveryRuns DiscoveryRun[]
+
+  @@map("connector_config")
+}
+
+// ── Discovery ─────────────────────────────────────────────────────────────────
+model DiscoveryRun {
+  runId          String    @id @default(uuid())
+  connectorId    String?
+  connectorType  String
+  startedAt      DateTime  @default(now())
+  completedAt    DateTime?
+  status         String    @default("RUNNING")
+  nhisDiscovered Int       @default(0)
+  nhisNew        Int       @default(0)
+  nhisUpdated    Int       @default(0)
+  nhisRemoved    Int       @default(0)
+  errors         Json      @default("[]")
+  triggeredBy    String
+
+  connector ConnectorConfig? @relation(fields: [connectorId], references: [connectorId])
+
+  @@map("discovery_run")
+}
+
+// ── Compliance ────────────────────────────────────────────────────────────────
+model ComplianceScore {
+  id        Int    @id @default(autoincrement())
+  framework String @unique
+  score     Int
+  controls  Int
+  passing   Int
+  failing   Int
+
+  @@map("compliance_score")
+}
+
+model CertificationCampaign {
+  campaignId String    @id @default(uuid())
+  name       String
+  framework  String
+  status     String    @default("DRAFT")
+  nhiScope   Json      @default("[]")
+  certifiers Json      @default("[]")
+  dueDate    DateTime
+  createdAt  DateTime  @default(now())
+  closedAt   DateTime?
+  decisions  Int       @default(0)
+  pending    Int       @default(0)
+
+  decisionRecords CertificationDecision[]
+
+  @@map("certification_campaign")
+}
+
+model CertificationDecision {
+  id            Int      @id @default(autoincrement())
+  campaignId    String
+  nhiId         String
+  certifierId   String
+  decision      String
+  justification String
+  decidedAt     DateTime @default(now())
+
+  campaign CertificationCampaign @relation(fields: [campaignId], references: [campaignId], onDelete: Cascade)
+
+  @@map("certification_decision")
+}
+
+// ── Audit ─────────────────────────────────────────────────────────────────────
+model AuditLog {
+  eventId      String   @id @default(uuid())
+  resourceId   String
+  resourceType String
+  actorId      String
+  actorRole    String
+  action       String
+  before       Json?
+  after        Json?
+  ipAddress    String
+  timestamp    DateTime @default(now())
+  traceId      String
+
+  @@index([resourceId])
+  @@index([actorId])
+  @@index([timestamp])
+  @@map("audit_log")
+}
+
+// ── Local users (email/password login) ───────────────────────────────────────
+model LocalUser {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String
+  createdAt    DateTime @default(now())
+
+  @@map("local_user")
+}
