@@ -42,14 +42,14 @@ export default function DiscoveryRuns() {
               <tbody>
                 {runs.map((run) => (
                   <tr key={run.runId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
-                    <td className="px-4 py-3 font-mono text-[10px] text-[#5a7a9a]">{run.runId.slice(0, 8)}…</td>
-                    <td className="px-4 py-3 text-[#b8cfe6]">{run.connectorType}</td>
+                    <td className="px-4 py-3 font-mono text-[10px] text-muted">{run.runId.slice(0, 8)}…</td>
+                    <td className="px-4 py-3 text-main">{run.connectorType}</td>
                     <td className="px-4 py-3">
                       <Badge color={run.status === 'COMPLETED' ? 'green' : run.status === 'FAILED' ? 'red' : 'amber'}>
                         {run.status}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 font-mono text-[10px] text-[#5a7a9a]">{formatDateTime(run.startedAt)}</td>
+                    <td className="px-4 py-3 font-mono text-[10px] text-muted">{formatDateTime(run.startedAt)}</td>
                     <td className="px-4 py-3 text-cyber-green">{run.nhisNew}</td>
                     <td className="px-4 py-3 text-cyber-amber">{run.nhisUpdated}</td>
                     <td className="px-4 py-3 text-cyber-red">{run.nhisRemoved}</td>

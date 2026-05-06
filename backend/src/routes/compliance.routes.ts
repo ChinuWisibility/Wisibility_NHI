@@ -1,57 +1,76 @@
 import { Router } from 'express'
 import { v4 as uuid } from 'uuid'
 import type { Request, Response } from 'express'
-import { db } from '../db/store.js'
-import type {
-  CertificationCampaign, CertificationDecisionRecord,
-  RegulatoryFramework,
-} from '../types/index.js'
+import { prisma } from '../lib/prisma.js'
 
 const router = Router()
 
-router.get('/score', (_req: Request, res: Response) => {
-  res.json({ data: db.complianceScores })
+router.get('/score', async (_req: Request, res: Response) => {
+  const scores = await prisma.complianceScore.findMany()
+  res.json({ data: scores })
 })
 
 router.post('/export/:framework', (req: Request, res: Response) => {
-  const framework = req.params.framework as RegulatoryFramework
-  res.json({ data: { url: `/exports/${framework.toLowerCase()}-evidence-${Date.now()}.zip` } })
+  res.json({
+    data: {
+      url:       `/exports/${req.params.framework}-${Date.now()}.csv`,
+      exportedAt: new Date().toISOString(),
+    },
+  })
 })
 
-router.get('/campaigns', (_req: Request, res: Response) => {
-  res.json({ data: db.certCampaigns })
+router.get('/campaigns', async (_req: Request, res: Response) => {
+  const campaigns = await prisma.certificationCampaign.findMany({ orderBy: { createdAt: 'desc' } })
+  res.json({ data: campaigns })
 })
 
-router.post('/campaigns', (req: Request, res: Response) => {
-  const body = req.body as Partial<CertificationCampaign>
-  const campaign: CertificationCampaign = {
-    campaignId: uuid(),
-    name:       body.name       ?? 'New Campaign',
-    framework:  body.framework  ?? 'SOC2',
-    status:     'DRAFT',
-    nhiScope:   body.nhiScope   ?? [],
-    certifiers: body.certifiers ?? [],
-    dueDate:    body.dueDate    ?? new Date(Date.now() + 30 * 86400 * 1000).toISOString(),
-    createdAt:  new Date().toISOString(),
-    decisions:  0,
-    pending:    (body.nhiScope ?? []).length,
-  }
-  db.certCampaigns.push(campaign)
+router.get('/campaigns/:id', async (req: Request, res: Response) => {
+  const campaign = await prisma.certificationCampaign.findUnique({ where: { campaignId: req.params.id } })
+  if (!campaign) { res.status(404).json({ error: 'Campaign not found' }); return }
+  const nhiIds   = campaign.nhiScope as string[]
+  const [nhis, decisions] = await Promise.all([
+    prisma.nhi.findMany({ where: { nhiId: { in: nhiIds } } }),
+    prisma.certificationDecision.findMany({ where: { campaignId: campaign.campaignId } }),
+  ])
+  res.json({ data: { ...campaign, nhis, decisions } })
+})
+
+router.post('/campaigns', async (req: Request, res: Response) => {
+  const body = req.body
+  const nhiIds: string[] = body.nhiScope ?? []
+  const campaign = await prisma.certificationCampaign.create({
+    data: {
+      campaignId: uuid(),
+      name:       body.name       ?? 'New Campaign',
+      framework:  body.framework  ?? 'SOC2',
+      status:     'ACTIVE',
+      nhiScope:   nhiIds,
+      certifiers: body.certifiers ?? [],
+      dueDate:    new Date(body.dueDate ?? Date.now() + 30 * 86_400_000),
+      decisions:  0,
+      pending:    nhiIds.length,
+    },
+  })
   res.status(201).json({ data: campaign })
 })
 
-router.post('/:campaignId/decisions', (req: Request, res: Response) => {
-  const campaign = db.certCampaigns.find((c) => c.campaignId === req.params.campaignId)
+router.post('/:campaignId/decisions', async (req: Request, res: Response) => {
+  const campaign = await prisma.certificationCampaign.findUnique({ where: { campaignId: req.params.campaignId } })
   if (!campaign) { res.status(404).json({ error: 'Campaign not found' }); return }
-
-  const decisions = req.body as Omit<CertificationDecisionRecord, 'certifierId' | 'decidedAt'>[]
-  const now       = new Date().toISOString()
-  for (const d of decisions) {
-    db.certDecisions.push({ ...d, campaignId: campaign.campaignId, certifierId: 'current-user', decidedAt: now })
-    campaign.decisions++
-    campaign.pending = Math.max(0, campaign.pending - 1)
-  }
-  res.json({ data: null, message: `${decisions.length} decision(s) recorded` })
+  const decision = await prisma.certificationDecision.create({
+    data: {
+      campaignId:    campaign.campaignId,
+      nhiId:         req.body.nhiId,
+      certifierId:   req.body.certifierId ?? 'current-user',
+      decision:      req.body.decision,
+      justification: req.body.justification ?? '',
+    },
+  })
+  await prisma.certificationCampaign.update({
+    where: { campaignId: campaign.campaignId },
+    data:  { decisions: { increment: 1 }, pending: { decrement: 1 } },
+  })
+  res.status(201).json({ data: decision })
 })
 
 export default router

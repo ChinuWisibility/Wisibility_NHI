@@ -85,7 +85,7 @@ export default function InventoryList() {
                     className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 cursor-pointer transition-colors"
                     onClick={() => navigate(`/inventory/${nhi.nhiId}`)}
                   >
-                    <td className="px-4 py-3 text-[#e2eeff] font-medium">{nhi.displayName}</td>
+                    <td className="px-4 py-3 text-bright font-medium">{nhi.displayName}</td>
                     <td className="px-4 py-3">
                       <Badge color="dim">{nhi.nhiType.replace(/_/g, ' ')}</Badge>
                     </td>
@@ -94,9 +94,9 @@ export default function InventoryList() {
                         {nhi.riskLevel} · {nhi.riskScore}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-mono text-[#5a7a9a]">{nhi.environment}</td>
-                    <td className="px-4 py-3 text-[#b8cfe6]">{nhi.ownerTeam ?? '—'}</td>
-                    <td className="px-4 py-3 font-mono text-[#5a7a9a]">{formatRelativeTime(nhi.lastDiscovered)}</td>
+                    <td className="px-4 py-3 font-mono text-muted">{nhi.environment}</td>
+                    <td className="px-4 py-3 text-main">{nhi.ownerTeam ?? '—'}</td>
+                    <td className="px-4 py-3 font-mono text-muted">{formatRelativeTime(nhi.lastDiscovered)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -105,7 +105,7 @@ export default function InventoryList() {
         )}
         {data && (
           <div className="px-4 py-3 border-t border-surface-border flex items-center justify-between">
-            <p className="font-mono text-[10px] text-[#5a7a9a]">
+            <p className="font-mono text-[10px] text-muted">
               {data.total} total NHIs · Page {data.page} of {data.totalPages}
             </p>
           </div>

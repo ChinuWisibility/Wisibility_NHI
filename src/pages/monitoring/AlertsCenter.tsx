@@ -48,7 +48,7 @@ export default function AlertsCenter() {
               'font-mono text-[10px] tracking-wide px-3 py-1.5 rounded border transition-colors',
               tab === t
                 ? 'border-cyber-cyan bg-cyber-cyan/10 text-cyber-cyan'
-                : 'border-surface-border text-[#5a7a9a] hover:text-[#b8cfe6]',
+                : 'border-surface-border text-muted hover:text-main',
               t === 'SEV1' && tab === 'SEV1' && 'animate-pulse-slow',
             )}
           >
@@ -91,9 +91,9 @@ export default function AlertsCenter() {
                         {alert.severity}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[#b8cfe6]">{alert.alertType.replace(/_/g, ' ')}</td>
-                    <td className="px-4 py-3 text-[#5a7a9a] max-w-xs truncate">{alert.description}</td>
-                    <td className="px-4 py-3 font-mono text-[10px] text-[#5a7a9a]">{formatRelativeTime(alert.detectedAt)}</td>
+                    <td className="px-4 py-3 text-main">{alert.alertType.replace(/_/g, ' ')}</td>
+                    <td className="px-4 py-3 text-muted max-w-xs truncate">{alert.description}</td>
+                    <td className="px-4 py-3 font-mono text-[10px] text-muted">{formatRelativeTime(alert.detectedAt)}</td>
                     <td className="px-4 py-3 font-mono text-[10px] text-cyber-cyan">{alert.nhiId.slice(0, 10)}…</td>
                     <td className="px-4 py-3">
                       <Button

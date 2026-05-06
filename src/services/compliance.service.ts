@@ -11,6 +11,9 @@ export const complianceService = {
   listCampaigns: (): Promise<CertificationCampaign[]> =>
     get<CertificationCampaign[]>('/certifications/campaigns'),
 
+  getCampaignById: (id: string): Promise<CertificationCampaign & { nhis: unknown[]; decisions: unknown[] }> =>
+    get(`/certifications/campaigns/${id}`),
+
   createCampaign: (body: Partial<CertificationCampaign>): Promise<CertificationCampaign> =>
     post<CertificationCampaign>('/certifications/campaigns', body),
 

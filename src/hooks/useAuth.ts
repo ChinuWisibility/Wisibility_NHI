@@ -3,7 +3,7 @@ import { useMsal, useIsAuthenticated } from '@azure/msal-react'
 import { InteractionStatus } from '@azure/msal-browser'
 import { useAuthStore } from '@/stores/authStore'
 import { loginRequest } from '@/config/azure-config'
-import { loginWithEmail, logoutEmail, setEmailToken } from '@/services/auth.service'
+import { loginWithEmail, logoutEmail } from '@/services/auth.service'
 import type { User, UserRole } from '@/types/user.types'
 
 const VALID_ROLES: UserRole[] = ['L0', 'L1', 'L2', 'L3', 'L4', 'L5']
@@ -40,7 +40,6 @@ export function useAuth() {
 
     if (!msalAuthenticated && !account && isAuthenticated && !import.meta.env.DEV) {
       storeLogout()
-      setEmailToken(null)
     }
   }, [msalAuthenticated, account, inProgress, user, isAuthenticated, setUser, setToken, storeLogout])
 
@@ -50,7 +49,6 @@ export function useAuth() {
 
   const emailLogin = useCallback(async (email: string, password: string) => {
     const result = await loginWithEmail(email, password)
-    setEmailToken(result.token)
     setToken(result.token)
     setUser(result.user)
     return result

@@ -1,10 +1,11 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useMsal, useIsAuthenticated } from '@azure/msal-react'
 import { InteractionStatus } from '@azure/msal-browser'
 import { AppShell } from '@/components/layout/AppShell'
 import { Spinner } from '@/components/ui/Spinner'
 import { useAuthStore } from '@/stores/authStore'
+import { useUIStore } from '@/stores/uiStore'
 import { ROLE_LEVELS } from '@/types/user.types'
 import { routes, ROLE_HOME, type RouteConfig } from '@/config/routes'
 import type { UserRole } from '@/types/user.types'
@@ -51,6 +52,16 @@ const LoadingFallback = () => (
 
 export default function App() {
   const userRole = useAuthStore((s) => s.userRole)
+  const theme = useUIStore((s) => s.theme)
+
+  useEffect(() => {
+    const root = window.document.documentElement
+    if (theme === 'light') {
+      root.classList.add('light')
+    } else {
+      root.classList.remove('light')
+    }
+  }, [theme])
 
   return (
     <Suspense fallback={<LoadingFallback />}>

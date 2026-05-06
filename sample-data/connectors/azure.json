@@ -1,0 +1,30 @@
+[
+  {
+    "displayName": "marketing-app-sp",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "OAUTH_CLIENT",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "STANDARD",
+    "breadthScore": 30,
+    "isShared": false,
+    "isHardcoded": false,
+    "ownerTeam": "Marketing",
+    "sourceConnector": "conn-azure-01",
+    "tags": { "tenant_id": "Azure-T1", "app_id": "a1b2c3d4" }
+  },
+  {
+    "displayName": "github-actions-oidc",
+    "nhiType": "OIDC",
+    "credentialType": "TOKEN",
+    "status": "ACTIVE",
+    "environment": "STAGING",
+    "privilegeLevel": "ELEVATED",
+    "breadthScore": 85,
+    "isShared": false,
+    "isHardcoded": false,
+    "ownerTeam": "Security",
+    "sourceConnector": "conn-azure-01",
+    "tags": { "issuer": "github.com", "audience": "api://nhi-alps" }
+  }
+]

@@ -9,7 +9,7 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   return (
-    <div className="min-h-screen bg-bg-dark text-[#b8cfe6] font-body">
+    <div className="min-h-screen bg-bg-dark text-main font-body">
       <Sidebar />
       <div className="ml-[260px] flex flex-col min-h-screen">
         <TopNav />
@@ -21,9 +21,9 @@ export function AppShell({ children }: AppShellProps) {
         position="bottom-right"
         toastOptions={{
           style: {
-            background: '#0c1a2e',
-            color:      '#b8cfe6',
-            border:     '1px solid #162840',
+            background: 'var(--color-surface-2)',
+            color:      'var(--color-text-main)',
+            border:     '1px solid var(--color-surface-border)',
             fontFamily: 'IBM Plex Mono, monospace',
             fontSize:   '12px',
           },

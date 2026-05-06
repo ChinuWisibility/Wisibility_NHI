@@ -53,14 +53,14 @@ export default function IssueList() {
               <tbody>
                 {data.items.map((issue) => (
                   <tr key={issue.issueId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
-                    <td className="px-4 py-3 font-mono text-[10px] text-[#5a7a9a]">{issue.nhiId.slice(0, 12)}…</td>
-                    <td className="px-4 py-3 text-[#b8cfe6]">{issue.issueType.replace(/_/g, ' ')}</td>
+                    <td className="px-4 py-3 font-mono text-[10px] text-muted">{issue.nhiId.slice(0, 12)}…</td>
+                    <td className="px-4 py-3 text-main">{issue.issueType.replace(/_/g, ' ')}</td>
                     <td className="px-4 py-3">
                       <Badge color={issue.severity === 'CRITICAL' ? 'red' : issue.severity === 'HIGH' ? 'amber' : 'cyan'}>
                         {issue.severity}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 font-mono text-[10px] text-[#5a7a9a]">{formatRelativeTime(issue.detectedAt)}</td>
+                    <td className="px-4 py-3 font-mono text-[10px] text-muted">{formatRelativeTime(issue.detectedAt)}</td>
                     <td className="px-4 py-3">
                       <Badge color={issue.status === 'OPEN' ? 'red' : issue.status === 'ACKNOWLEDGED' ? 'amber' : 'green'}>
                         {issue.status}

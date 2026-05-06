@@ -1,11 +1,10 @@
 import axios from 'axios'
 import { InteractionRequiredAuthError } from '@azure/msal-browser'
 import { msalInstance, loginRequest } from '@/config/azure-config'
-import { getEmailToken } from '@/services/auth.service'
+import { useAuthStore } from '@/stores/authStore'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
-  headers: { 'Content-Type': 'application/json' },
 })
 
 api.interceptors.request.use(async (config) => {
@@ -19,8 +18,8 @@ api.interceptors.request.use(async (config) => {
       })
       config.headers.Authorization = `Bearer ${result.accessToken}`
     } else {
-      // Email login JWT fallback
-      const token = getEmailToken()
+      // Email login JWT fallback — read from Zustand store (persisted in localStorage)
+      const token = useAuthStore.getState().sessionToken
       if (token) config.headers.Authorization = `Bearer ${token}`
     }
   } catch (error) {
@@ -34,7 +33,8 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isLoginRequest = error.config?.url?.includes('/auth/login')
+    if (error.response?.status === 401 && !isLoginRequest) {
       window.location.href = '/login'
     }
     return Promise.reject(error)

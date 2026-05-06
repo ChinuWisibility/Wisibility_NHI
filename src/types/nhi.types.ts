@@ -77,4 +77,5 @@ export interface NHIListParams {
   nhiType?:    NHIType
   status?:     NHIStatus
   ownerId?:    string
+  sourceConnector?: string
 }

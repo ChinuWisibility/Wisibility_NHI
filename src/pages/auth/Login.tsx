@@ -47,11 +47,10 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
 ]
 
 export default function Login() {
-  const { login, emailLogin } = useAuth()
-  const setUser               = useAuthStore((s) => s.setUser)
+  const { login, emailLogin, isAuthenticated: isAuth, userRole } = useAuth()
+  const { setUser, setToken } = useAuthStore()
   const navigate              = useNavigate()
   const location              = useLocation()
-  const msalAuthenticated     = useIsAuthenticated()
 
   const [view, setView]               = useState<'login' | 'register'>('login')
   const [msalLoading, setMsalLoading] = useState(false)
@@ -65,8 +64,11 @@ export default function Login() {
     defaultValues: { role: 'L2' },
   })
 
-  if (msalAuthenticated) {
-    navigate(location.state?.from || '/security/dashboard', { replace: true })
+  // Auto-redirect if already logged in
+  if (isAuth && userRole) {
+    const from = location.state?.from || ROLE_HOME[userRole]
+    console.log(`[Login] Already authenticated as ${userRole}, redirecting to ${from}`)
+    navigate(from, { replace: true })
     return null
   }
 
@@ -81,10 +83,15 @@ export default function Login() {
 
   const onLogin = async (data: LoginData) => {
     setLoading(true)
+    console.log(`[Login] Attempting login for ${data.email}...`)
     try {
       const result = await emailLogin(data.email, data.password)
-      navigate(location.state?.from || ROLE_HOME[result.user.role], { replace: true })
+      console.log(`[Login] Success! User role: ${result.user.role}`)
+      const target = location.state?.from || ROLE_HOME[result.user.role]
+      console.log(`[Login] Navigating to ${target}`)
+      navigate(target, { replace: true })
     } catch (err: unknown) {
+      console.error('[Login] Error:', err)
       toast.error(err instanceof Error ? err.message : 'Invalid email or password')
     } finally {
       setLoading(false)
@@ -106,6 +113,8 @@ export default function Login() {
   }
 
   const devLogin = (role: UserRole) => {
+    const token = `dev-jwt-${role}`
+    setToken(token) // Make sure to use setToken from useAuthStore
     setUser({
       userId:     `dev-${role}`,
       email:      `dev-${role.toLowerCase()}@nhi.local`,
@@ -128,10 +137,10 @@ export default function Login() {
           <p className="font-mono text-[9px] tracking-[4px] text-cyber-cyan opacity-70 uppercase mb-3">
             Non-Human Identity
           </p>
-          <h1 className="font-display text-3xl font-bold text-[#e2eeff] tracking-tight">
+          <h1 className="font-display text-3xl font-bold text-bright tracking-tight">
             NHI<span className="text-cyber-cyan">ALPS</span>
           </h1>
-          <p className="text-xs text-[#5a7a9a] mt-2">Governance Platform · Secure Access</p>
+          <p className="text-xs text-muted mt-2">Governance Platform · Secure Access</p>
         </div>
 
         {/* Card */}
@@ -146,7 +155,7 @@ export default function Login() {
                 className={`flex-1 py-3 font-mono text-[10px] tracking-[2px] uppercase transition-colors ${
                   view === v
                     ? 'text-cyber-cyan border-b-2 border-cyber-cyan bg-cyber-cyan/5'
-                    : 'text-[#5a7a9a] hover:text-[#b8cfe6]'
+                    : 'text-muted hover:text-main'
                 }`}
               >
                 {v === 'login' ? 'Sign In' : 'Create Account'}
@@ -180,7 +189,7 @@ export default function Login() {
                 {/* Divider */}
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-px bg-surface-border" />
-                  <span className="font-mono text-[10px] text-[#5a7a9a] uppercase tracking-widest">or</span>
+                  <span className="font-mono text-[10px] text-muted uppercase tracking-widest">or</span>
                   <div className="flex-1 h-px bg-surface-border" />
                 </div>
 
@@ -206,7 +215,7 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={() => setShowPassword((v) => !v)}
-                      className="absolute right-3 top-[34px] font-mono text-[10px] text-[#5a7a9a] hover:text-cyber-cyan transition-colors"
+                      className="absolute right-3 top-[34px] font-mono text-[10px] text-muted hover:text-cyber-cyan transition-colors"
                       tabIndex={-1}
                     >
                       {showPassword ? 'HIDE' : 'SHOW'}
@@ -217,7 +226,7 @@ export default function Login() {
                   </Button>
                 </form>
 
-                <p className="text-center text-xs text-[#5a7a9a]">
+                <p className="text-center text-xs text-muted">
                   No account?{' '}
                   <button
                     type="button"
@@ -260,7 +269,7 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={() => setShowPassword((v) => !v)}
-                      className="absolute right-3 top-[34px] font-mono text-[10px] text-[#5a7a9a] hover:text-cyber-cyan transition-colors"
+                      className="absolute right-3 top-[34px] font-mono text-[10px] text-muted hover:text-cyber-cyan transition-colors"
                       tabIndex={-1}
                     >
                       {showPassword ? 'HIDE' : 'SHOW'}
@@ -278,7 +287,7 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={() => setShowConfirm((v) => !v)}
-                      className="absolute right-3 top-[34px] font-mono text-[10px] text-[#5a7a9a] hover:text-cyber-cyan transition-colors"
+                      className="absolute right-3 top-[34px] font-mono text-[10px] text-muted hover:text-cyber-cyan transition-colors"
                       tabIndex={-1}
                     >
                       {showConfirm ? 'HIDE' : 'SHOW'}
@@ -287,12 +296,12 @@ export default function Login() {
 
                   {/* Role selector */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="font-mono text-[10px] tracking-[1px] uppercase text-[#5a7a9a]">
+                    <label className="font-mono text-[10px] tracking-[1px] uppercase text-muted">
                       Role
                     </label>
                     <select
                       {...regForm.register('role')}
-                      className="w-full bg-surface-2 border border-surface-border rounded px-3 py-2.5 text-sm text-[#b8cfe6] focus:outline-none focus:border-cyber-cyan/60 transition-colors"
+                      className="w-full bg-surface-2 border border-surface-border rounded px-3 py-2.5 text-sm text-main focus:outline-none focus:border-cyber-cyan/60 transition-colors"
                     >
                       {ROLE_OPTIONS.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
@@ -308,7 +317,7 @@ export default function Login() {
                   </Button>
                 </form>
 
-                <p className="text-center text-xs text-[#5a7a9a]">
+                <p className="text-center text-xs text-muted">
                   Already have an account?{' '}
                   <button
                     type="button"
@@ -337,7 +346,7 @@ export default function Login() {
                   className="flex flex-col items-start px-3 py-2 rounded border border-surface-border hover:border-cyber-cyan/50 hover:bg-cyber-cyan/5 transition-colors text-left"
                 >
                   <span className="font-mono text-[10px] text-cyber-cyan">{role}</span>
-                  <span className="text-[10px] text-[#5a7a9a] leading-tight mt-0.5">
+                  <span className="text-[10px] text-muted leading-tight mt-0.5">
                     {USER_ROLE_LABELS[role]}
                   </span>
                 </button>
@@ -346,7 +355,7 @@ export default function Login() {
           </div>
         )}
 
-        <p className="text-center font-mono text-[9px] text-[#5a7a9a] mt-6">
+        <p className="text-center font-mono text-[9px] text-muted mt-6">
           © 2025 NHI Governance Platform · CONFIDENTIAL
         </p>
       </div>

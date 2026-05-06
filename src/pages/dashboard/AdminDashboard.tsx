@@ -31,8 +31,8 @@ export default function AdminDashboard() {
               {connectors.map((c) => (
                 <div key={c.connectorId} className="flex items-center justify-between py-2 border-b border-surface-border last:border-0">
                   <div>
-                    <p className="text-xs text-[#b8cfe6]">{c.displayName}</p>
-                    <p className="font-mono text-[10px] text-[#5a7a9a]">{c.connectorType}</p>
+                    <p className="text-xs text-main">{c.displayName}</p>
+                    <p className="font-mono text-[10px] text-muted">{c.connectorType}</p>
                   </div>
                   <Badge color={c.status === 'ACTIVE' ? 'green' : c.status === 'ERROR' ? 'red' : 'amber'}>
                     {c.status}
@@ -41,12 +41,12 @@ export default function AdminDashboard() {
               ))}
             </div>
           ) : (
-            <p className="text-xs text-[#5a7a9a]">No connectors configured. Add one in Discovery → Connectors.</p>
+            <p className="text-xs text-muted">No connectors configured. Add one in Discovery → Connectors.</p>
           )}
         </Card>
         <Card accent="amber">
           <CardHeader>Quick Actions</CardHeader>
-          <div className="space-y-2 text-xs text-[#b8cfe6]">
+          <div className="space-y-2 text-xs text-main">
             {[
               { label: 'Add Connector',     href: '/discovery/connectors' },
               { label: 'Manage Users',      href: '/admin/users' },

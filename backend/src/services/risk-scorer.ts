@@ -14,10 +14,12 @@ export function computeRiskScore(nhi: Partial<NHI> & {
   certExpiry?: string
   vaultPath?: string
 }): { score: number; level: RiskLevel } {
-  const privilege = PRIV_SCORES[nhi.privilegeLevel]
-  const breadth   = Math.min(nhi.breadthScore, 100)
+  const priv = nhi.privilegeLevel as PrivilegeLevel
+  const privilege = PRIV_SCORES[priv] ?? PRIV_SCORES.STANDARD
+  const breadth   = Math.min(Number(nhi.breadthScore) || 0, 100)
 
-  const ageMs  = Date.now() - new Date(nhi.createdAt).getTime()
+  const createdDate = new Date(nhi.createdAt)
+  const ageMs  = Date.now() - (isNaN(createdDate.getTime()) ? Date.now() : createdDate.getTime())
   const ageDays = ageMs / (1000 * 60 * 60 * 24)
   const age    = Math.min((ageDays / 365) * 100, 100)
 

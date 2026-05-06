@@ -1,6 +1,31 @@
 version: "3.9"
 
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: nhi-alps-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nhi_user
+      POSTGRES_PASSWORD: nhi_password
+      POSTGRES_DB: nhi_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: nhi-alps-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@nhi-alps.com
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
   backend:
     build:
       context: ./backend
@@ -11,10 +36,16 @@ services:
     environment:
       PORT: "4000"
       JWT_SECRET: "nhi-alps-dev-secret-change-in-prod"
-      NODE_ENV: "production"
+      NODE_ENV: "development"
+      DATABASE_URL: "postgresql://nhi_user:nhi_password@db:5432/nhi_db?schema=public"
+    depends_on:
+      - db
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
       interval: 30s
       timeout: 5s
       retries: 3
+
+volumes:
+  postgres_data:

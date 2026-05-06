@@ -1,0 +1,30 @@
+[
+  {
+    "displayName": "SNOWFLAKE_READER_SVC",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "PASSWORD",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "STANDARD",
+    "breadthScore": 25,
+    "isShared": true,
+    "isHardcoded": false,
+    "ownerTeam": "Analytics",
+    "sourceConnector": "conn-snowflake-01",
+    "tags": { "account": "xy12345", "role": "READ_ONLY", "warehouse": "COMPUTE_WH" }
+  },
+  {
+    "displayName": "SNOWFLAKE_INGEST_KEY",
+    "nhiType": "API_KEY",
+    "credentialType": "API_KEY",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "ADMIN",
+    "breadthScore": 90,
+    "isShared": false,
+    "isHardcoded": false,
+    "ownerTeam": "DataEng",
+    "sourceConnector": "conn-snowflake-01",
+    "tags": { "account": "xy12345", "mechanism": "KEY_PAIR_AUTH" }
+  }
+]

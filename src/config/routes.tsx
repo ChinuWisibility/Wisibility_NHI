@@ -21,6 +21,7 @@ const NHIRequest    = lazy(() => import('@/pages/inventory/NHIRequest'))
 
 // Discovery
 const ConnectorHub    = lazy(() => import('@/pages/discovery/ConnectorHub'))
+const ConnectorDetail = lazy(() => import('@/pages/discovery/ConnectorDetail'))
 const DiscoveryRuns   = lazy(() => import('@/pages/discovery/DiscoveryRuns'))
 const DiscoveryDetail = lazy(() => import('@/pages/discovery/DiscoveryDetail'))
 
@@ -49,6 +50,7 @@ const ExportCenter            = lazy(() => import('@/pages/compliance/ExportCent
 const UserManagement = lazy(() => import('@/pages/admin/UserManagement'))
 const SystemConfig   = lazy(() => import('@/pages/admin/SystemConfig'))
 const AuditLog       = lazy(() => import('@/pages/admin/AuditLog'))
+const Policies       = lazy(() => import('@/pages/admin/Policies'))
 
 export interface RouteConfig {
   path:      string
@@ -77,9 +79,10 @@ export const routes: RouteConfig[] = [
   { path: '/dev/request',        element: <NHIRequest />,    minRole: 'L3' },
 
   // Discovery
-  { path: '/discovery/connectors', element: <ConnectorHub />,    minRole: 'L0' },
-  { path: '/discovery/runs',       element: <DiscoveryRuns />,   minRole: 'L2' },
-  { path: '/discovery/runs/:id',   element: <DiscoveryDetail />, minRole: 'L2' },
+  { path: '/discovery/connectors',     element: <ConnectorHub />,    minRole: 'L0' },
+  { path: '/discovery/connectors/:id', element: <ConnectorDetail />, minRole: 'L0' },
+  { path: '/discovery/runs',           element: <DiscoveryRuns />,   minRole: 'L2' },
+  { path: '/discovery/runs/:id',       element: <DiscoveryDetail />, minRole: 'L2' },
 
   // Posture
   { path: '/posture',           element: <PostureDashboard />, minRole: 'L2' },
@@ -103,9 +106,10 @@ export const routes: RouteConfig[] = [
   { path: '/compliance/export',           element: <ExportCenter />,           minRole: 'L4' },
 
   // Admin
-  { path: '/admin/users',  element: <UserManagement />, minRole: 'L0' },
-  { path: '/admin/config', element: <SystemConfig />,   minRole: 'L0' },
-  { path: '/admin/audit',  element: <AuditLog />,       minRole: 'L4' },
+  { path: '/admin/users',    element: <UserManagement />, minRole: 'L0' },
+  { path: '/admin/config',   element: <SystemConfig />,   minRole: 'L0' },
+  { path: '/admin/audit',    element: <AuditLog />,       minRole: 'L4' },
+  { path: '/admin/policies', element: <Policies />,       minRole: 'L0' },
 ]
 
 export const ROLE_HOME: Record<UserRole, string> = {

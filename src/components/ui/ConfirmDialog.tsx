@@ -23,14 +23,14 @@ export function ConfirmDialog({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="bg-surface border border-surface-border rounded-lg p-6 max-w-md shadow-2xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
-        <AlertDialogTitle className="font-display text-sm font-semibold text-[#e2eeff] mb-2">
+        <AlertDialogTitle className="font-display text-sm font-semibold text-bright mb-2">
           {title}
         </AlertDialogTitle>
-        <AlertDialogDescription className="text-xs text-[#5a7a9a] mb-5">
+        <AlertDialogDescription className="text-xs text-muted mb-5">
           {description}
         </AlertDialogDescription>
         <div className="flex gap-3 justify-end">
-          <AlertDialogCancel className="font-mono text-[10px] px-4 py-2 rounded border border-surface-border text-[#5a7a9a] hover:text-[#e2eeff] bg-surface-2 transition-colors">
+          <AlertDialogCancel className="font-mono text-[10px] px-4 py-2 rounded border border-surface-border text-muted hover:text-bright bg-surface-2 transition-colors">
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction

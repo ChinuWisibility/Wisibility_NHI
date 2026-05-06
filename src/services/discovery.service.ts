@@ -15,9 +15,18 @@ export const discoveryService = {
   listConnectors: (): Promise<ConnectorConfig[]> =>
     get<ConnectorConfig[]>('/connectors'),
 
+  getConnector: (id: string): Promise<ConnectorConfig> =>
+    get<ConnectorConfig>(`/connectors/${id}`),
+
   createConnector: (body: Partial<ConnectorConfig>): Promise<ConnectorConfig> =>
     post<ConnectorConfig>('/connectors', body),
 
   testConnector: (id: string): Promise<{ connected: boolean; latencyMs: number; error?: string }> =>
     post(`/connectors/${id}/test`),
+
+  ingest: (file: File): Promise<{ message: string; count: number }> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return post('/discovery/ingest', formData)
+  },
 }

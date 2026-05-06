@@ -1,0 +1,16 @@
+[
+  {
+    "displayName": "ci-cd-deploy-token",
+    "nhiType": "LONG_LIVED_TOKEN",
+    "credentialType": "TOKEN",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "ADMIN",
+    "breadthScore": 95,
+    "isShared": true,
+    "isHardcoded": true,
+    "ownerTeam": "DevOps",
+    "sourceConnector": "conn-github-01",
+    "tags": { "org": "nhi-alps-org", "repo": "all", "scopes": ["repo", "admin:org"] }
+  }
+]

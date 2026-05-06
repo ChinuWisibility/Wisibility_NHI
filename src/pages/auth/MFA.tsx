@@ -23,11 +23,11 @@ export default function MFA() {
 
   return (
     <div className="min-h-screen bg-bg-dark flex flex-col items-center justify-center gap-4">
-      <h1 className="font-display text-2xl font-bold text-[#e2eeff]">
+      <h1 className="font-display text-2xl font-bold text-bright">
         NHI<span className="text-cyber-cyan">ALPS</span>
       </h1>
       <Spinner size="lg" />
-      <p className="font-mono text-[10px] tracking-[2px] uppercase text-[#5a7a9a]">
+      <p className="font-mono text-[10px] tracking-[2px] uppercase text-muted">
         Completing authentication…
       </p>
     </div>

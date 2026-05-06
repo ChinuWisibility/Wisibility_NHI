@@ -4,7 +4,37 @@
 
 @layer base {
   :root {
+    --color-bg-dark: #04080F;
+    --color-surface: #08111F;
+    --color-surface-2: #0C1A2E;
+    --color-surface-3: #162840;
+    --color-surface-border: #162840;
+    --color-text-main: #b8cfe6;
+    --color-text-muted: #5a7a9a;
+    --color-text-bright: #e2eeff;
+    --color-cyber-cyan: #00C8F0;
+    --color-cyber-green: #00E887;
+    --color-cyber-amber: #FFB020;
+    --color-cyber-red: #FF4560;
+    --color-cyber-purple: #A855F7;
     color-scheme: dark;
+  }
+
+  :root.light {
+    --color-bg-dark: #f8fafc;
+    --color-surface: #ffffff;
+    --color-surface-2: #f1f5f9;
+    --color-surface-3: #cbd5e1;
+    --color-surface-border: #cbd5e1;
+    --color-text-main: #334155;
+    --color-text-muted: #475569;
+    --color-text-bright: #0f172a;
+    --color-cyber-cyan: #0891b2;
+    --color-cyber-green: #059669;
+    --color-cyber-amber: #d97706;
+    --color-cyber-red: #dc2626;
+    --color-cyber-purple: #9333ea;
+    color-scheme: light;
   }
 
   html {
@@ -12,11 +42,13 @@
   }
 
   body {
-    @apply bg-bg-dark text-[#b8cfe6] font-body;
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-main);
+    @apply font-body;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Scanline overlay */
+  /* Scanline overlay - disable in light mode or make it very subtle */
   body::before {
     content: '';
     position: fixed;
@@ -31,16 +63,21 @@
     pointer-events: none;
     z-index: 9999;
   }
+  
+  .light body::before {
+    display: none;
+  }
 
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-surface-2;
+    background-color: var(--color-surface-2);
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-surface-3 rounded;
+    background-color: var(--color-surface-3);
+    @apply rounded;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #254d7a;

@@ -184,6 +184,21 @@ model AuditLog {
   @@map("audit_log")
 }
 
+// ── Policies ──────────────────────────────────────────────────────────────────
+model Policy {
+  policyId    String   @id @default(uuid())
+  name        String
+  description String
+  enabled     Boolean  @default(true)
+  filters     Json     @default("{}")
+  action      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   String
+
+  @@map("policy")
+}
+
 // ── Local users (email/password login) ───────────────────────────────────────
 model LocalUser {
   id           String   @id @default(uuid())
@@ -191,6 +206,7 @@ model LocalUser {
   passwordHash String
   name         String
   role         String
+  mfaEnabled   Boolean  @default(true)
   createdAt    DateTime @default(now())
 
   @@map("local_user")

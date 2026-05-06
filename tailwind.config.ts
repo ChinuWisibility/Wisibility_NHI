@@ -3,26 +3,30 @@ import forms from '@tailwindcss/forms'
 import typography from '@tailwindcss/typography'
 
 const config: Config = {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
         cyber: {
-          cyan:   '#00C8F0',
-          green:  '#00E887',
-          amber:  '#FFB020',
-          red:    '#FF4560',
-          purple: '#A855F7',
+          cyan:   'var(--color-cyber-cyan)',
+          green:  'var(--color-cyber-green)',
+          amber:  'var(--color-cyber-amber)',
+          red:    'var(--color-cyber-red)',
+          purple: 'var(--color-cyber-purple)',
         },
         surface: {
-          DEFAULT: '#08111F',
-          2:       '#0C1A2E',
-          3:       '#162840',
-          border:  '#162840',
+          DEFAULT: 'var(--color-surface)',
+          2:       'var(--color-surface-2)',
+          3:       'var(--color-surface-3)',
+          border:  'var(--color-surface-border)',
         },
         bg: {
-          dark: '#04080F',
+          dark: 'var(--color-bg-dark)',
         },
+        main:   'var(--color-text-main)',
+        muted:  'var(--color-text-muted)',
+        bright: 'var(--color-text-bright)',
       },
       fontFamily: {
         display: ['Orbitron', 'sans-serif'],

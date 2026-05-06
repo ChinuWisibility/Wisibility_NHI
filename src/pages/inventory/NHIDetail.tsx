@@ -11,7 +11,7 @@ export default function NHIDetail() {
   const { data, isLoading } = useNHIDetail(id ?? '')
 
   if (isLoading) return <div className="flex items-center justify-center py-20"><Spinner size="lg" /></div>
-  if (!data) return <p className="text-xs text-[#5a7a9a] p-6">NHI not found.</p>
+  if (!data) return <p className="text-xs text-muted p-6">NHI not found.</p>
 
   return (
     <div className="animate-fade-up max-w-5xl">
@@ -50,8 +50,8 @@ export default function NHIDetail() {
               { label: 'Source',      value: data.sourceConnector },
             ].map(({ label, value }) => (
               <div key={label}>
-                <dt className="font-mono text-[9px] uppercase tracking-wider text-[#5a7a9a]">{label}</dt>
-                <dd className="text-[#b8cfe6] mt-0.5 truncate">{String(value)}</dd>
+                <dt className="font-mono text-[9px] uppercase tracking-wider text-muted">{label}</dt>
+                <dd className="text-main mt-0.5 truncate">{String(value)}</dd>
               </div>
             ))}
           </dl>

@@ -13,18 +13,21 @@ export type ConnectorType =
   | 'CICD_JENKINS'
   | 'CICD_AZURE_DEVOPS'
   | 'SAAS'
+  | 'DEMO'
 
 export type ConnectorStatus = 'ACTIVE' | 'INACTIVE' | 'ERROR' | 'TESTING' | 'PENDING'
 
 export interface ConnectorConfig {
-  connectorId:   string
-  connectorType: ConnectorType
-  displayName:   string
-  status:        ConnectorStatus
-  config:        Record<string, string>
-  lastTestAt?:   string
-  lastRunAt?:    string
-  createdAt:     string
+  connectorId:     string
+  connectorType:   ConnectorType
+  displayName:     string
+  status:          ConnectorStatus
+  config:          Record<string, string>
+  lastTestAt?:     string
+  lastRunAt?:      string
+  createdAt:       string
+  nhiCount?:       number
+  totalIdentities?: number
 }
 
 export interface DiscoveryRun {

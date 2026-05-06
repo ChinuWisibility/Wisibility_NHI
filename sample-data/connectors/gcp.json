@@ -1,0 +1,30 @@
+[
+  {
+    "displayName": "gke-node-service-account",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "TOKEN",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "STANDARD",
+    "breadthScore": 40,
+    "isShared": false,
+    "isHardcoded": false,
+    "ownerTeam": "Platform",
+    "sourceConnector": "conn-gcp-01",
+    "tags": { "project_id": "nhi-alps-prod", "zone": "us-central1-a", "service": "compute" }
+  },
+  {
+    "displayName": "bq-data-sync-sa",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "API_KEY",
+    "status": "ACTIVE",
+    "environment": "STAGING",
+    "privilegeLevel": "ELEVATED",
+    "breadthScore": 65,
+    "isShared": false,
+    "isHardcoded": false,
+    "ownerTeam": "Data",
+    "sourceConnector": "conn-gcp-01",
+    "tags": { "project_id": "nhi-alps-staging", "dataset": "analytics_v1" }
+  }
+]

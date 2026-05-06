@@ -44,8 +44,8 @@ export default function ExportCenter() {
           {FRAMEWORKS.map(({ label, fw }) => (
             <div key={fw} className="flex items-center justify-between py-3 border-b border-surface-border last:border-0">
               <div>
-                <p className="text-sm text-[#e2eeff]">{label}</p>
-                <p className="font-mono text-[10px] text-[#5a7a9a] mt-0.5">Full evidence pack with NHI decisions + timestamps</p>
+                <p className="text-sm text-bright">{label}</p>
+                <p className="font-mono text-[10px] text-muted mt-0.5">Full evidence pack with NHI decisions + timestamps</p>
               </div>
               <Button
                 variant="primary"

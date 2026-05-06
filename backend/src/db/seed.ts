@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid'
 import type {
   NHI, PostureIssue, Alert, ConnectorConfig,
   DiscoveryRun, ComplianceScore, CertificationCampaign,
-  AuditLogEntry,
+  AuditLogEntry, Policy,
 } from '../types/index.js'
 
 function daysAgo(n: number): string {
@@ -628,5 +628,101 @@ export const AuditLogs: AuditLogEntry[] = [
     actorId: 'dev-L2', actorRole: 'L2', action: 'ALERT_RESOLVED',
     before: { status: 'ACKNOWLEDGED' }, after: { status: 'RESOLVED', resolution: 'False positive — team VPN' },
     ipAddress: '10.0.1.22', timestamp: daysAgo(1), traceId: uuid(),
+  },
+]
+
+// ── Users ─────────────────────────────────────────────────────────────────────
+export const Users: import('../types/index.js').User[] = [
+  { userId: 'dev-L0',   email: 'alice.chen@nhi-alps.io',     name: 'Alice Chen',       role: 'L0', mfaEnabled: true,  createdAt: daysAgo(400) },
+  { userId: 'dev-L1',   email: 'bob.martinez@nhi-alps.io',   name: 'Bob Martinez',     role: 'L1', mfaEnabled: true,  createdAt: daysAgo(350) },
+  { userId: 'dev-L1-b', email: 'james.obrien@nhi-alps.io',   name: 'James O\'Brien',   role: 'L1', mfaEnabled: true,  createdAt: daysAgo(280) },
+  { userId: 'dev-L2',   email: 'carol.singh@nhi-alps.io',    name: 'Carol Singh',      role: 'L2', mfaEnabled: true,  createdAt: daysAgo(300) },
+  { userId: 'dev-L2-b', email: 'iris.nakamura@nhi-alps.io',  name: 'Iris Nakamura',    role: 'L2', mfaEnabled: true,  createdAt: daysAgo(150) },
+  { userId: 'dev-L3',   email: 'david.park@nhi-alps.io',     name: 'David Park',       role: 'L3', mfaEnabled: false, createdAt: daysAgo(200) },
+  { userId: 'dev-L3-b', email: 'emma.white@nhi-alps.io',     name: 'Emma White',       role: 'L3', mfaEnabled: true,  createdAt: daysAgo(180) },
+  { userId: 'dev-L3-c', email: 'priya.sharma@nhi-alps.io',   name: 'Priya Sharma',     role: 'L3', mfaEnabled: false, createdAt: daysAgo(120) },
+  { userId: 'dev-L4',   email: 'frank.okafor@nhi-alps.io',   name: 'Frank Okafor',     role: 'L4', mfaEnabled: true,  createdAt: daysAgo(250) },
+  { userId: 'dev-L5-a', email: 'grace.liu@nhi-alps.io',      name: 'Grace Liu',        role: 'L5', mfaEnabled: false, createdAt: daysAgo(100) },
+  { userId: 'dev-L5-b', email: 'henry.torres@nhi-alps.io',   name: 'Henry Torres',     role: 'L5', mfaEnabled: false, createdAt: daysAgo(90)  },
+]
+
+// ── Policies ──────────────────────────────────────────────────────────────────
+export const Policies: Omit<Policy, 'affectedCount'>[] = [
+  {
+    policyId:    'pol-001',
+    name:        'Rotate All Hardcoded Credentials',
+    description: 'Any NHI flagged as hardcoded must be rotated within 30 days regardless of risk level.',
+    enabled:     true,
+    filters:     { riskLevel: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] },
+    action:      'REQUIRE_ROTATION',
+    createdAt:   daysAgo(60),
+    updatedAt:   daysAgo(10),
+    createdBy:   'dev-L0',
+  },
+  {
+    policyId:    'pol-002',
+    name:        'Block Production Admin Accounts Without Vault',
+    description: 'Admin-privileged service accounts in PROD must be stored in HashiCorp Vault.',
+    enabled:     true,
+    filters:     { environment: ['PROD'], riskLevel: ['CRITICAL', 'HIGH'] },
+    action:      'ENFORCE_VAULT',
+    createdAt:   daysAgo(45),
+    updatedAt:   daysAgo(5),
+    createdBy:   'dev-L0',
+  },
+  {
+    policyId:    'pol-003',
+    name:        'Alert on Shared API Keys in Production',
+    description: 'Shared API keys active in the PROD environment trigger an immediate alert.',
+    enabled:     true,
+    filters:     { nhiType: ['API_KEY'], environment: ['PROD'] },
+    action:      'ALERT',
+    createdAt:   daysAgo(30),
+    updatedAt:   daysAgo(3),
+    createdBy:   'dev-L1',
+  },
+  {
+    policyId:    'pol-004',
+    name:        'Review All Ownerless NHIs',
+    description: 'NHIs with no assigned owner must be reviewed and assigned within 14 days.',
+    enabled:     true,
+    filters:     { riskLevel: ['CRITICAL', 'HIGH'] },
+    action:      'REQUIRE_REVIEW',
+    createdAt:   daysAgo(20),
+    updatedAt:   daysAgo(2),
+    createdBy:   'dev-L1',
+  },
+  {
+    policyId:    'pol-005',
+    name:        'Block Deployment of Long-Lived Tokens',
+    description: 'Long-lived tokens in PROD or STAGING environments are blocked from new deployments.',
+    enabled:     false,
+    filters:     { nhiType: ['LONG_LIVED_TOKEN'], environment: ['PROD', 'STAGING'] },
+    action:      'BLOCK_DEPLOYMENT',
+    createdAt:   daysAgo(15),
+    updatedAt:   daysAgo(15),
+    createdBy:   'dev-L0',
+  },
+  {
+    policyId:    'pol-006',
+    name:        'Enforce Vault Storage for Certificates',
+    description: 'All TLS certificates must be managed through an approved vault integration.',
+    enabled:     true,
+    filters:     { nhiType: ['CERTIFICATE'] },
+    action:      'ENFORCE_VAULT',
+    createdAt:   daysAgo(90),
+    updatedAt:   daysAgo(20),
+    createdBy:   'dev-L0',
+  },
+  {
+    policyId:    'pol-007',
+    name:        'Payments Team — Rotation Enforcement',
+    description: 'All NHIs owned by the Payments team must rotate credentials every 30 days.',
+    enabled:     true,
+    filters:     { ownerTeam: ['Payments'] },
+    action:      'REQUIRE_ROTATION',
+    createdAt:   daysAgo(10),
+    updatedAt:   daysAgo(1),
+    createdBy:   'dev-L1',
   },
 ]

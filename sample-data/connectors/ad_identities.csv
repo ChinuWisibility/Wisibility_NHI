@@ -1,0 +1,4 @@
+displayName,nhiType,credentialType,status,environment,privilegeLevel,breadthScore,isShared,isHardcoded,ownerTeam,sourceConnector
+ad-svc-sql-prod,SERVICE_ACCOUNT,PASSWORD,ACTIVE,PROD,ELEVATED,55,false,false,DBA,conn-ad-01
+ad-svc-iis-web,SERVICE_ACCOUNT,PASSWORD,ACTIVE,PROD,STANDARD,20,false,false,WebOps,conn-ad-01
+ad-scanner-svc,SERVICE_ACCOUNT,PASSWORD,ACTIVE,STAGING,STANDARD,15,true,false,Security,conn-ad-01

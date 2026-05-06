@@ -1,0 +1,30 @@
+[
+  {
+    "displayName": "s3-backup-user",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "API_KEY",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "ELEVATED",
+    "breadthScore": 45,
+    "isShared": false,
+    "isHardcoded": false,
+    "ownerTeam": "Platform",
+    "sourceConnector": "conn-aws-01",
+    "tags": { "account_id": "123456789012", "region": "us-east-1", "service": "s3" }
+  },
+  {
+    "displayName": "lambda-edge-role",
+    "nhiType": "IAM_ROLE",
+    "credentialType": "TOKEN",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "STANDARD",
+    "breadthScore": 12,
+    "isShared": true,
+    "isHardcoded": false,
+    "ownerTeam": "DevOps",
+    "sourceConnector": "conn-aws-01",
+    "tags": { "account_id": "123456789012", "runtime": "nodejs18.x" }
+  }
+]

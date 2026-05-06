@@ -63,15 +63,15 @@ export default function SecurityOpsDashboard() {
           <CardHeader>Posture Issues by Category</CardHeader>
           {posture ? (
             <div className="space-y-2">
-              {Object.entries(posture.issueCount).map(([cat, count]) => (
+              {Object.entries(posture.issueCount || {}).map(([cat, count]) => (
                 <div key={cat} className="flex items-center justify-between py-2 border-b border-surface-border last:border-0">
-                  <span className="text-xs text-[#b8cfe6]">{cat.replace(/_/g, ' ')}</span>
+                  <span className="text-xs text-main">{cat.replace(/_/g, ' ')}</span>
                   <Badge color={count > 0 ? 'amber' : 'green'}>{count}</Badge>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-xs text-[#5a7a9a]">Loading posture data…</p>
+            <p className="text-xs text-muted">Loading posture data…</p>
           )}
         </Card>
 
@@ -85,14 +85,14 @@ export default function SecurityOpsDashboard() {
                     {alert.severity}
                   </Badge>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-[#b8cfe6] truncate">{alert.description}</p>
-                    <p className="font-mono text-[10px] text-[#5a7a9a]">{formatRelativeTime(alert.detectedAt)}</p>
+                    <p className="text-xs text-main truncate">{alert.description}</p>
+                    <p className="font-mono text-[10px] text-muted">{formatRelativeTime(alert.detectedAt)}</p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-xs text-[#5a7a9a]">No active alerts — system nominal</p>
+            <p className="text-xs text-muted">No active alerts — system nominal</p>
           )}
         </Card>
       </div>

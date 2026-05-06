@@ -1,17 +1,10 @@
 import { Router } from 'express'
 import type { Request, Response } from 'express'
-import { db } from '../db/store.js'
+import { prisma } from '../lib/prisma.js'
 
 const router = Router()
 
-function paginate<T>(items: T[], page: number, limit: number) {
-  const total      = items.length
-  const totalPages = Math.ceil(total / limit)
-  const slice     = items.slice((page - 1) * limit, page * limit)
-  return { items: slice, total, page, limit, totalPages }
-}
-
-router.get('/logs', (req: Request, res: Response) => {
+router.get('/logs', async (req: Request, res: Response) => {
   const page       = Math.max(1, parseInt(String(req.query.page  ?? '1'),  10))
   const limit      = Math.min(100, Math.max(1, parseInt(String(req.query.limit ?? '20'), 10)))
   const resourceId = req.query.resourceId as string | undefined
@@ -20,16 +13,22 @@ router.get('/logs', (req: Request, res: Response) => {
   const from       = req.query.from       as string | undefined
   const to         = req.query.to         as string | undefined
 
-  let items = [...db.auditLogs].sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-  )
-  if (resourceId) items = items.filter((l) => l.resourceId === resourceId)
-  if (actorId)    items = items.filter((l) => l.actorId    === actorId)
-  if (action)     items = items.filter((l) => l.action.includes(action))
-  if (from)       items = items.filter((l) => l.timestamp  >= from)
-  if (to)         items = items.filter((l) => l.timestamp  <= to)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const where: any = {}
+  if (resourceId) where.resourceId = resourceId
+  if (actorId)    where.actorId    = actorId
+  if (action)     where.action     = { contains: action, mode: 'insensitive' }
+  if (from || to) {
+    where.timestamp = {}
+    if (from) where.timestamp.gte = new Date(from)
+    if (to)   where.timestamp.lte = new Date(to)
+  }
 
-  res.json(paginate(items, page, limit))
+  const [items, total] = await Promise.all([
+    prisma.auditLog.findMany({ where, skip: (page - 1) * limit, take: limit, orderBy: { timestamp: 'desc' } }),
+    prisma.auditLog.count({ where }),
+  ])
+  res.json({ items, total, page, limit, totalPages: Math.ceil(total / limit) })
 })
 
 export default router

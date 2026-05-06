@@ -36,7 +36,7 @@ export function Card({ children, accent = 'none', className, padding = true }: C
 
 export function CardHeader({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn('font-mono text-[9px] tracking-[1.5px] uppercase text-[#5a7a9a] mb-3', className)}>
+    <div className={cn('font-mono text-[9px] tracking-[1.5px] uppercase text-muted mb-3', className)}>
       {children}
     </div>
   )

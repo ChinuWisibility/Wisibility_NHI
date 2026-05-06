@@ -25,8 +25,26 @@ export interface PostureIssue {
 
 export interface PostureReport {
   score:       number
-  scoreDelta:  number
-  issueCount:  Record<PostureIssueCategory, number>
+  delta:       number
+  open:        number
+  acknowledged: number
   trend:       { date: string; score: number }[]
-  generatedAt: string
+  byCategory:  { category: string; count: number }[]
+  discovery: {
+    connectorsCount: number
+    totalAccounts:   number
+    byConnector:     { id: string; count: number }[]
+  }
+  classification: {
+    ownership: { assigned: number; unassigned: number }
+    privilege: { admin: number; elevated: number; standard: number; readonly: number }
+    breadth:   { high: number; medium: number; low: number }
+    usage:     { active: number; dormant: number; pending: number }
+  }
+  hygiene: {
+    excessivePermissions: number
+    inactiveAccounts:     number
+    sharedAccounts:       number
+    envSegregation:      { prod: number; nonProd: number }
+  }
 }

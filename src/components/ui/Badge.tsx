@@ -15,7 +15,7 @@ const colors: Record<BadgeColor, string> = {
   amber:  'text-cyber-amber  bg-cyber-amber/10  border-cyber-amber/30',
   red:    'text-cyber-red    bg-cyber-red/10    border-cyber-red/30',
   purple: 'text-cyber-purple bg-cyber-purple/10 border-cyber-purple/30',
-  dim:    'text-[#5a7a9a]    bg-surface-2       border-surface-border',
+  dim:    'text-muted    bg-surface-2       border-surface-border',
 }
 
 export function Badge({ color = 'cyan', children, className }: BadgeProps) {

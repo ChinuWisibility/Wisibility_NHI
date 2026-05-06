@@ -23,11 +23,11 @@ export function StatCard({ label, value, sub, icon, accent = 'cyan', className }
   return (
     <div className={cn('bg-surface-2 border border-surface-border border-t-2 rounded p-4', a.border, className)}>
       <div className="flex items-start justify-between mb-2">
-        <p className="font-mono text-[9px] tracking-[1.5px] uppercase text-[#5a7a9a]">{label}</p>
+        <p className="font-mono text-[9px] tracking-[1.5px] uppercase text-muted">{label}</p>
         {icon && <span className={cn('opacity-60', a.text)}>{icon}</span>}
       </div>
       <p className={cn('font-display text-2xl font-bold', a.text)}>{value}</p>
-      {sub && <p className="text-[11px] text-[#5a7a9a] mt-1">{sub}</p>}
+      {sub && <p className="text-[11px] text-muted mt-1">{sub}</p>}
     </div>
   )
 }

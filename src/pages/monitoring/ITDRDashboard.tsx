@@ -37,13 +37,13 @@ export default function ITDRDashboard() {
             <div className="space-y-2">
               {Object.entries(byType).map(([type, count]) => (
                 <div key={type} className="flex items-center justify-between py-2 border-b border-surface-border last:border-0">
-                  <span className="text-xs text-[#b8cfe6]">{type.replace(/_/g, ' ')}</span>
+                  <span className="text-xs text-main">{type.replace(/_/g, ' ')}</span>
                   <Badge color="red">{count}</Badge>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-xs text-[#5a7a9a]">No active anomalies detected. UEBA baseline is healthy.</p>
+            <p className="text-xs text-muted">No active anomalies detected. UEBA baseline is healthy.</p>
           )}
         </Card>
         <Card accent="cyan">
@@ -53,7 +53,7 @@ export default function ITDRDashboard() {
               'Lateral Movement', 'Privilege Escalation', 'Stale-Active Pattern', 'Geo Anomaly'].map((d) => (
               <div key={d} className="flex items-center gap-2 py-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyber-green flex-shrink-0" />
-                <span className="text-xs text-[#b8cfe6]">{d}</span>
+                <span className="text-xs text-main">{d}</span>
               </div>
             ))}
           </div>

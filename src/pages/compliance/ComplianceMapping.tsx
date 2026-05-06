@@ -36,7 +36,7 @@ export default function ComplianceMapping() {
       </div>
       <Card accent="purple">
         <CardHeader>Control × Framework Matrix</CardHeader>
-        <p className="text-xs text-[#5a7a9a]">Connect to AWS backend to see the full control mapping matrix.</p>
+        <p className="text-xs text-muted">Connect to AWS backend to see the full control mapping matrix.</p>
       </Card>
     </div>
   )

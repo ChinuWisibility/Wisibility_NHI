@@ -25,7 +25,7 @@ export default function CertificationCampaigns() {
       {data && data.length === 0 && (
         <Card accent="purple">
           <CardHeader>No campaigns</CardHeader>
-          <p className="text-xs text-[#5a7a9a]">Create a certification campaign to begin the review process.</p>
+          <p className="text-xs text-muted">Create a certification campaign to begin the review process.</p>
         </Card>
       )}
       {data && data.length > 0 && (
@@ -34,8 +34,8 @@ export default function CertificationCampaigns() {
             <Card key={c.campaignId} accent="purple">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-[#e2eeff] font-medium">{c.name}</p>
-                  <p className="font-mono text-[10px] text-[#5a7a9a] mt-0.5">
+                  <p className="text-sm text-bright font-medium">{c.name}</p>
+                  <p className="font-mono text-[10px] text-muted mt-0.5">
                     {c.framework.replace(/_/g, ' ')} · Due {formatDate(c.dueDate)}
                   </p>
                 </div>
@@ -51,7 +51,7 @@ export default function CertificationCampaigns() {
                   </a>
                 </div>
               </div>
-              <div className="flex gap-4 mt-3 text-xs text-[#5a7a9a]">
+              <div className="flex gap-4 mt-3 text-xs text-muted">
                 <span>{c.decisions} decisions made</span>
                 <span>{c.pending} pending</span>
               </div>

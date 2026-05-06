@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
@@ -6,13 +6,18 @@ import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { useConnectors, useTriggerDiscovery } from '@/hooks/useDiscovery'
-import { ServerIcon } from '@heroicons/react/24/outline'
+import { ServerIcon, ArrowUpTrayIcon, UserGroupIcon, IdentificationIcon } from '@heroicons/react/24/outline'
+import { discoveryService } from '@/services/discovery.service'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 export default function ConnectorHub() {
   const { data: connectors, isLoading } = useConnectors()
   const triggerDiscovery = useTriggerDiscovery()
   const [triggering, setTriggering] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
 
   const handleTriggerAll = async () => {
     setTriggering(true)
@@ -26,14 +31,48 @@ export default function ConnectorHub() {
     }
   }
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const result = await discoveryService.ingest(file)
+      toast.success(result.message)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.error || err.message || 'Failed to upload file'
+      console.error('[Upload Error]', err)
+      toast.error(errorMsg, { duration: 5000 })
+    } finally {
+      setUploading(false)
+    }
+  }
+
   return (
     <div className="animate-fade-up">
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept=".json,.csv"
+        onChange={handleFileUpload}
+      />
       <PageHeader
         title="Connector Hub"
         subtitle="Manage integrations with identity sources. Configure, test, and trigger discovery."
         breadcrumbs={[{ label: 'Discovery' }, { label: 'Connectors' }]}
         actions={
           <div className="flex gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              loading={uploading}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <ArrowUpTrayIcon className="w-4 h-4 mr-1" />
+              Upload Identities
+            </Button>
             <Button variant="secondary" size="sm">+ Add Connector</Button>
             <Button variant="primary" size="sm" loading={triggering} onClick={handleTriggerAll}>
               ▶ Trigger All
@@ -53,21 +92,56 @@ export default function ConnectorHub() {
       {connectors && connectors.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {connectors.map((c) => (
-            <Card key={c.connectorId} accent="cyan">
+            <Card 
+              key={c.connectorId} 
+              accent="cyan" 
+              className="cursor-pointer hover:border-cyber-cyan/50 transition-colors"
+              onClick={() => navigate(`/discovery/connectors/${c.connectorId}`)}
+            >
               <CardHeader>{c.connectorType}</CardHeader>
               <div className="flex items-start justify-between mb-3">
-                <p className="text-sm text-[#e2eeff] font-medium">{c.displayName}</p>
+                <p className="text-sm text-bright font-medium">{c.displayName}</p>
                 <Badge color={
                   c.status === 'ACTIVE' ? 'green' :
                   c.status === 'ERROR'  ? 'red'   : 'amber'
                 }>{c.status}</Badge>
               </div>
+
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                <div className="bg-surface-light p-2 rounded-lg border border-surface-border">
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted mb-1">
+                    <UserGroupIcon className="w-3 h-3" />
+                    <span>Total Identities</span>
+                  </div>
+                  <p className="text-sm font-mono font-bold text-main">{c.totalIdentities?.toLocaleString() || 0}</p>
+                </div>
+                <div className="bg-cyber-cyan/5 p-2 rounded-lg border border-cyber-cyan/20">
+                  <div className="flex items-center gap-1.5 text-[10px] text-cyber-cyan mb-1">
+                    <IdentificationIcon className="w-3 h-3" />
+                    <span>NHIs Found</span>
+                  </div>
+                  <p className="text-sm font-mono font-bold text-cyber-cyan">{c.nhiCount?.toLocaleString() || 0}</p>
+                </div>
+              </div>
+
               {c.lastRunAt && (
-                <p className="font-mono text-[10px] text-[#5a7a9a]">Last run: {c.lastRunAt}</p>
+                <p className="font-mono text-[10px] text-muted">Last run: {new Date(c.lastRunAt).toLocaleString()}</p>
               )}
               <div className="flex gap-2 mt-3">
-                <Button variant="ghost" size="sm">Edit</Button>
-                <Button variant="secondary" size="sm">Test</Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={(e) => { e.stopPropagation(); /* Edit logic */ }}
+                >
+                  Edit
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  size="sm"
+                  onClick={(e) => { e.stopPropagation(); /* Test logic */ }}
+                >
+                  Test
+                </Button>
               </div>
             </Card>
           ))}

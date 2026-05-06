@@ -56,12 +56,12 @@ export default function AuditLog() {
               <tbody>
                 {data.items.map((log) => (
                   <tr key={log.eventId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
-                    <td className="px-4 py-3 font-mono text-[10px] text-[#5a7a9a]">{formatDateTime(log.timestamp)}</td>
+                    <td className="px-4 py-3 font-mono text-[10px] text-muted">{formatDateTime(log.timestamp)}</td>
                     <td className="px-4 py-3 font-mono text-[10px] text-cyber-cyan">{log.actorId.slice(0, 10)}…</td>
                     <td className="px-4 py-3"><Badge color="dim">{log.actorRole}</Badge></td>
-                    <td className="px-4 py-3 text-[#b8cfe6]">{log.action}</td>
-                    <td className="px-4 py-3 text-[#5a7a9a]">{log.resourceType}</td>
-                    <td className="px-4 py-3 font-mono text-[10px] text-[#5a7a9a]">{log.resourceId.slice(0, 12)}…</td>
+                    <td className="px-4 py-3 text-main">{log.action}</td>
+                    <td className="px-4 py-3 text-muted">{log.resourceType}</td>
+                    <td className="px-4 py-3 font-mono text-[10px] text-muted">{log.resourceId.slice(0, 12)}…</td>
                   </tr>
                 ))}
               </tbody>

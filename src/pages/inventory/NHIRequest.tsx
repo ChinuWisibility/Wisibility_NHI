@@ -40,8 +40,8 @@ export default function NHIRequest() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <Badge color="green" className="mb-4">Submitted</Badge>
-        <p className="font-display text-xl text-[#e2eeff] mb-2">Request Submitted</p>
-        <p className="text-xs text-[#5a7a9a]">Your request is pending approval from the Program Manager.</p>
+        <p className="font-display text-xl text-bright mb-2">Request Submitted</p>
+        <p className="text-xs text-muted">Your request is pending approval from the Program Manager.</p>
       </div>
     )
   }
@@ -59,10 +59,10 @@ export default function NHIRequest() {
         {[1, 2, 3].map((s) => (
           <div key={s} className="flex items-center gap-2">
             <span className={`w-6 h-6 rounded-full border font-mono text-[10px] flex items-center justify-center transition-colors ${
-              step >= s ? 'border-cyber-cyan bg-cyber-cyan/10 text-cyber-cyan' : 'border-surface-border text-[#5a7a9a]'
+              step >= s ? 'border-cyber-cyan bg-cyber-cyan/10 text-cyber-cyan' : 'border-surface-border text-muted'
             }`}>{s}</span>
-            <span className="text-[11px] text-[#5a7a9a]">{['Type & Env', 'Justification', 'Review'][s - 1]}</span>
-            {s < 3 && <span className="text-[#5a7a9a]">→</span>}
+            <span className="text-[11px] text-muted">{['Type & Env', 'Justification', 'Review'][s - 1]}</span>
+            {s < 3 && <span className="text-muted">→</span>}
           </div>
         ))}
       </div>
@@ -84,9 +84,9 @@ export default function NHIRequest() {
             <CardHeader>Step 2 — Business Justification</CardHeader>
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="font-mono text-[10px] tracking-widest uppercase text-[#5a7a9a]">Justification</label>
+                <label className="font-mono text-[10px] tracking-widest uppercase text-muted">Justification</label>
                 <textarea
-                  className="w-full bg-surface-2 border border-surface-border rounded px-3 py-2 text-sm text-[#b8cfe6] placeholder:text-[#5a7a9a] focus:outline-none focus:border-cyber-cyan resize-none"
+                  className="w-full bg-surface-2 border border-surface-border rounded px-3 py-2 text-sm text-main placeholder:text-muted/50 focus:outline-none focus:border-cyber-cyan resize-none"
                   rows={4}
                   placeholder="Describe the business need for this NHI (min 20 chars)"
                   {...register('justification')}
@@ -106,8 +106,8 @@ export default function NHIRequest() {
             <dl className="grid grid-cols-2 gap-3 text-xs mb-6">
               {Object.entries(getValues()).map(([k, v]) => (
                 <div key={k}>
-                  <dt className="font-mono text-[9px] uppercase tracking-wider text-[#5a7a9a]">{k}</dt>
-                  <dd className="text-[#b8cfe6] mt-0.5">{v}</dd>
+                  <dt className="font-mono text-[9px] uppercase tracking-wider text-muted">{k}</dt>
+                  <dd className="text-main mt-0.5">{v}</dd>
                 </div>
               ))}
             </dl>

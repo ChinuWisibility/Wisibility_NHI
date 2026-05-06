@@ -84,9 +84,10 @@ function useNavSections(alertCount: number): NavSection[] {
     {
       label: 'Admin',
       items: [
-        { label: 'Users',      href: '/admin/users',  icon: UsersIcon,  minRole: 'L0' },
-        { label: 'Audit Log',  href: '/admin/audit',  icon: DocumentMagnifyingGlassIcon, minRole: 'L4' },
-        { label: 'Settings',   href: '/admin/config', icon: Cog6ToothIcon, minRole: 'L0' },
+        { label: 'Users',      href: '/admin/users',     icon: UsersIcon,                   minRole: 'L0' },
+        { label: 'Policies',   href: '/admin/policies',  icon: ShieldCheckIcon,             minRole: 'L0' },
+        { label: 'Audit Log',  href: '/admin/audit',     icon: DocumentMagnifyingGlassIcon, minRole: 'L4' },
+        { label: 'Settings',   href: '/admin/config',    icon: Cog6ToothIcon,               minRole: 'L0' },
       ],
     },
   ]
@@ -107,7 +108,7 @@ export function Sidebar() {
         <p className="font-mono text-[9px] tracking-[3px] text-cyber-cyan opacity-70 uppercase mb-1.5">
           NHI · Governance Platform
         </p>
-        <NavLink to={homeHref} className="font-display text-[13px] font-bold text-[#e2eeff] tracking-tight leading-tight">
+        <NavLink to={homeHref} className="font-display text-[13px] font-bold text-bright tracking-tight leading-tight">
           NHI<span className="text-cyber-cyan">ALPS</span>
         </NavLink>
       </div>
@@ -119,7 +120,7 @@ export function Sidebar() {
           if (!visible.length) return null
           return (
             <div key={section.label} className="mb-2">
-              <p className="font-mono text-[9px] tracking-[2px] uppercase text-[#5a7a9a] px-5 py-2">
+              <p className="font-mono text-[9px] tracking-[2px] uppercase text-muted px-5 py-2">
                 {section.label}
               </p>
               {visible.map((item) => (
@@ -128,7 +129,7 @@ export function Sidebar() {
                   to={item.href}
                   className={({ isActive }) =>
                     cn(
-                      'flex items-center gap-2.5 px-5 py-2 text-[12.5px] text-[#b8cfe6] border-l-2 transition-all duration-150',
+                      'flex items-center gap-2.5 px-5 py-2 text-[12.5px] text-main border-l-2 transition-all duration-150',
                       isActive
                         ? 'border-cyber-cyan bg-cyber-cyan/8 text-cyber-cyan'
                         : 'border-transparent hover:bg-cyber-cyan/6 hover:text-cyber-cyan hover:border-cyber-cyan/50',
@@ -151,7 +152,7 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="px-5 py-4 border-t border-surface-border">
-        <p className="font-mono text-[9px] text-[#5a7a9a] leading-relaxed">
+        <p className="font-mono text-[9px] text-muted leading-relaxed">
           React 18 · Vite · TypeScript<br />Tailwind CSS · AWS · CDK<br />© 2025 — CONFIDENTIAL
         </p>
       </div>

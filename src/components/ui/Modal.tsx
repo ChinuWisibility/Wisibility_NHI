@@ -44,10 +44,10 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
               >
                 {title && (
                   <div className="flex items-center justify-between px-5 py-4 border-b border-surface-border">
-                    <Dialog.Title className="font-display text-sm font-semibold text-[#e2eeff]">
+                    <Dialog.Title className="font-display text-sm font-semibold text-bright">
                       {title}
                     </Dialog.Title>
-                    <button onClick={onClose} className="text-[#5a7a9a] hover:text-[#e2eeff] transition-colors">
+                    <button onClick={onClose} className="text-muted hover:text-bright transition-colors">
                       <XMarkIcon className="w-4 h-4" />
                     </button>
                   </div>
