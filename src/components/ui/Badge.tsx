@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/utils/cn'
 
-type BadgeColor = 'cyan' | 'green' | 'amber' | 'red' | 'purple' | 'dim'
+type BadgeColor = 'cyan' | 'green' | 'amber' | 'red' | 'purple' | 'dim' | 'blue'
 
 interface BadgeProps {
   color?:    BadgeColor
@@ -16,6 +16,7 @@ const colors: Record<BadgeColor, string> = {
   red:    'text-cyber-red    bg-cyber-red/10    border-cyber-red/30',
   purple: 'text-cyber-purple bg-cyber-purple/10 border-cyber-purple/30',
   dim:    'text-muted    bg-surface-2       border-surface-border',
+  blue:   'text-blue-400     bg-blue-400/10     border-blue-400/30',
 }
 
 export function Badge({ color = 'cyan', children, className }: BadgeProps) {

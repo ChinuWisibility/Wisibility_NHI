@@ -379,7 +379,7 @@ export default function ConnectorDetail() {
   )
 }
 
-function StatSmall({ label, value, icon, accent }: { label: string, value: string | number, icon: React.ReactNode, accent?: string }) {
+function StatSmall({ label, value, icon, accent }: { label: string, value: string | number, icon: React.ReactNode, accent?: AccentColor }) {
   return (
     <Card accent={accent} className="py-3 px-4">
       <div className="flex items-center gap-2 mb-1">
@@ -402,6 +402,12 @@ function MetadataItem({ icon, label, value }: { icon: React.ReactNode, label: st
       <div className="mt-1 text-muted">{icon}</div>
       <div className="flex flex-col">
         <span className="text-[9px] text-muted uppercase tracking-tighter">{label}</span>
+        <span className="text-[11px] text-bright font-medium">{value}</span>
+      </div>
+    </div>
+  )
+}
+n>
         <span className="text-[11px] text-bright font-medium">{value}</span>
       </div>
     </div>

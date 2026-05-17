@@ -14,8 +14,7 @@ import {
   SparklesIcon,
   ExclamationTriangleIcon,
   UsersIcon,
-  ClockIcon,
-  ArrowsPointingOutIcon
+  ClockIcon
 } from '@heroicons/react/24/outline'
 import { 
   BarChart, 
@@ -31,8 +30,6 @@ import {
 } from 'recharts'
 
 type TabType = 'discovery' | 'classification' | 'hygiene'
-
-const COLORS = ['#00f2ff', '#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e']
 
 export default function PostureDashboard() {
   const { data, isLoading } = usePostureReport()

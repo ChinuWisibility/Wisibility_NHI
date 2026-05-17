@@ -8,6 +8,7 @@ interface CardProps {
   accent?:   AccentColor
   className?: string
   padding?:  boolean
+  onClick?:  () => void
 }
 
 const accents: Record<AccentColor, string> = {
@@ -19,13 +20,15 @@ const accents: Record<AccentColor, string> = {
   none:   '',
 }
 
-export function Card({ children, accent = 'none', className, padding = true }: CardProps) {
+export function Card({ children, accent = 'none', className, padding = true, onClick }: CardProps) {
   return (
     <div
+      onClick={onClick}
       className={cn(
         'bg-surface rounded border border-surface-border',
         accent !== 'none' && `border-t-2 ${accents[accent]}`,
         padding && 'p-4',
+        onClick && 'cursor-pointer hover:border-cyber-cyan/50 transition-colors',
         className,
       )}
     >

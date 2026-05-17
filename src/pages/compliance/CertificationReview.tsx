@@ -32,7 +32,12 @@ export default function CertificationReview() {
     mutationFn: () => {
       const payload = Object.entries(decisions)
         .filter(([, d]) => d !== null)
-        .map(([nhiId, decision]) => ({ nhiId, decision: decision!, justification: 'Reviewed via portal' }))
+        .map(([nhiId, decision]) => ({ 
+          campaignId: id!,
+          nhiId, 
+          decision: decision!, 
+          justification: 'Reviewed via portal' 
+        }))
       return complianceService.submitDecisions(id!, payload)
     },
     onSuccess: () => {

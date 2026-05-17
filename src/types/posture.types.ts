@@ -26,7 +26,9 @@ export interface PostureIssue {
 export interface PostureReport {
   score:       number
   delta:       number
+  scoreDelta:  number
   open:        number
+  issueCount:  Record<string, number>
   acknowledged: number
   trend:       { date: string; score: number }[]
   byCategory:  { category: string; count: number }[]
