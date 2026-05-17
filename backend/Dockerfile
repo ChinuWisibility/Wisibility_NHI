@@ -17,6 +17,7 @@ FROM node:20-alpine
 WORKDIR /app
 COPY --from=deps  /app/node_modules ./node_modules
 COPY --from=build /app/dist         ./dist
+COPY package*.json ./
 COPY prisma.config.ts ./
 COPY prisma ./prisma
 EXPOSE 4000
