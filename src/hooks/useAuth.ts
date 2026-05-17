@@ -18,7 +18,7 @@ function extractRole(claims: Record<string, unknown> | undefined): UserRole {
 export function useAuth() {
   const { instance, accounts, inProgress } = useMsal()
   const msalAuthenticated = useIsAuthenticated()
-  const { user, userRole, isAuthenticated, setUser, setToken, logout: storeLogout } = useAuthStore()
+  const { user, userRole, isAuthenticated, sessionToken, setUser, setToken, logout: storeLogout } = useAuthStore()
 
   const account = accounts[0] ?? null
 
@@ -38,10 +38,11 @@ export function useAuth() {
       } satisfies User)
     }
 
-    if (!msalAuthenticated && !account && isAuthenticated && !import.meta.env.DEV) {
+    // Only auto-logout if both MSAL and local session are missing
+    if (!msalAuthenticated && !account && isAuthenticated && !sessionToken && !import.meta.env.DEV) {
       storeLogout()
     }
-  }, [msalAuthenticated, account, inProgress, user, isAuthenticated, setUser, setToken, storeLogout])
+  }, [msalAuthenticated, account, inProgress, user, isAuthenticated, sessionToken, setUser, setToken, storeLogout])
 
   const login = useCallback(() => {
     instance.loginRedirect(loginRequest)
