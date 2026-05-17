@@ -1,7 +1,5 @@
-import { Suspense, useEffect, useContext } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useMsal, useIsAuthenticated, MsalContext } from '@azure/msal-react'
-import { InteractionStatus } from '@azure/msal-browser'
 import { AppShell } from '@/components/layout/AppShell'
 import { Spinner } from '@/components/ui/Spinner'
 import { useAuthStore } from '@/stores/authStore'
@@ -12,30 +10,8 @@ import type { UserRole } from '@/types/user.types'
 
 function RouteGuard({ config }: { config: RouteConfig }) {
   const location = useLocation()
-  
-  // Check if we are inside an MSAL context
-  const msalContext = useContext(MsalContext)
-  const hasMsal = !!msalContext?.instance
-
-  const { inProgress } = hasMsal 
-    ? useMsal() 
-    : { inProgress: InteractionStatus.None }
-    
-  const msalAuthenticated  = hasMsal ? useIsAuthenticated() : false
-  const zustandAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const userRole = useAuthStore((s) => s.userRole)
-
-  // While MSAL is handling the redirect promise, show a spinner rather than bouncing to /login
-  if (inProgress !== InteractionStatus.None) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-bg-dark">
-        <Spinner size="lg" />
-      </div>
-    )
-  }
-
-  // Accept either MSAL auth (production) or Zustand-only auth (dev mode bypass)
-  const isAuthenticated = msalAuthenticated || zustandAuthenticated
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />

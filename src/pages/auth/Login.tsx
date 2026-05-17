@@ -46,13 +46,12 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
 ]
 
 export default function Login() {
-  const { login, emailLogin, isAuthenticated: isAuth, userRole } = useAuth()
+  const { emailLogin, isAuthenticated: isAuth, userRole } = useAuth()
   const { setUser, setToken } = useAuthStore()
   const navigate              = useNavigate()
   const location              = useLocation()
 
   const [view, setView]               = useState<'login' | 'register'>('login')
-  const [msalLoading, setMsalLoading] = useState(false)
   const [loading, setLoading]         = useState(false)
   const [showPassword, setShowPassword]   = useState(false)
   const [showConfirm, setShowConfirm]     = useState(false)
@@ -66,31 +65,18 @@ export default function Login() {
   // Auto-redirect if already logged in
   if (isAuth && userRole) {
     const from = location.state?.from || ROLE_HOME[userRole]
-    console.log(`[Login] Already authenticated as ${userRole}, redirecting to ${from}`)
     navigate(from, { replace: true })
     return null
   }
 
   // ── Handlers ──────────────────────────────────────────────────────────────
-  const handleMsalLogin = () => {
-    setMsalLoading(true)
-    try { login() } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'Login failed')
-      setMsalLoading(false)
-    }
-  }
-
   const onLogin = async (data: LoginData) => {
     setLoading(true)
-    console.log(`[Login] Attempting login for ${data.email}...`)
     try {
       const result = await emailLogin(data.email, data.password)
-      console.log(`[Login] Success! User role: ${result.user.role}`)
       const target = location.state?.from || ROLE_HOME[result.user.role]
-      console.log(`[Login] Navigating to ${target}`)
       navigate(target, { replace: true })
     } catch (err: unknown) {
-      console.error('[Login] Error:', err)
       toast.error(err instanceof Error ? err.message : 'Invalid email or password')
     } finally {
       setLoading(false)
@@ -113,7 +99,7 @@ export default function Login() {
 
   const devLogin = (role: UserRole) => {
     const token = `dev-jwt-${role}`
-    setToken(token) // Make sure to use setToken from useAuthStore
+    setToken(token) 
     setUser({
       userId:     `dev-${role}`,
       email:      `dev-${role.toLowerCase()}@nhi.local`,
@@ -125,7 +111,6 @@ export default function Login() {
     navigate(ROLE_HOME[role], { replace: true })
   }
 
-  // ── Shared layout wrapper ─────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-bg-dark flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,200,240,0.012)_2px,rgba(0,200,240,0.012)_4px)] pointer-events-none" />
@@ -165,34 +150,6 @@ export default function Login() {
           <div className="p-8 space-y-6">
             {view === 'login' ? (
               <>
-                {/* Microsoft SSO */}
-                <div>
-                  <Button
-                    type="button"
-                    variant="primary"
-                    size="lg"
-                    loading={msalLoading}
-                    onClick={handleMsalLogin}
-                    className="w-full flex items-center justify-center gap-3"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 21 21" fill="none" aria-hidden="true">
-                      <rect x="1"  y="1"  width="9" height="9" fill="#F25022"/>
-                      <rect x="11" y="1"  width="9" height="9" fill="#7FBA00"/>
-                      <rect x="1"  y="11" width="9" height="9" fill="#00A4EF"/>
-                      <rect x="11" y="11" width="9" height="9" fill="#FFB900"/>
-                    </svg>
-                    Sign in with Microsoft
-                  </Button>
-                </div>
-
-                {/* Divider */}
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-surface-border" />
-                  <span className="font-mono text-[10px] text-muted uppercase tracking-widest">or</span>
-                  <div className="flex-1 h-px bg-surface-border" />
-                </div>
-
-                {/* Email sign-in */}
                 <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
                   <Input
                     label="Email Address"
@@ -220,7 +177,7 @@ export default function Login() {
                       {showPassword ? 'HIDE' : 'SHOW'}
                     </button>
                   </div>
-                  <Button type="submit" variant="secondary" size="lg" loading={loading} className="w-full">
+                  <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full">
                     Sign In
                   </Button>
                 </form>
@@ -238,7 +195,6 @@ export default function Login() {
               </>
             ) : (
               <>
-                {/* Create account form */}
                 <form onSubmit={regForm.handleSubmit(onRegister)} className="space-y-4">
                   <Input
                     label="Full Name"
@@ -293,7 +249,6 @@ export default function Login() {
                     </button>
                   </div>
 
-                  {/* Role selector */}
                   <div className="flex flex-col gap-1.5">
                     <label className="font-mono text-[10px] tracking-[1px] uppercase text-muted">
                       Role
@@ -331,7 +286,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Dev quick-login — only in development */}
         {import.meta.env.DEV && (
           <div className="mt-4 bg-surface border border-cyber-amber/30 rounded-lg p-4">
             <p className="font-mono text-[9px] tracking-[2px] uppercase text-cyber-amber mb-3">

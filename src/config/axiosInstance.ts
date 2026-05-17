@@ -1,6 +1,4 @@
 import axios from 'axios'
-import { InteractionRequiredAuthError } from '@azure/msal-browser'
-import { msalInstance, loginRequest } from '@/config/azure-config'
 import { useAuthStore } from '@/stores/authStore'
 
 const api = axios.create({
@@ -8,27 +6,10 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(async (config) => {
-  try {
-    if (msalInstance) {
-      const accounts = msalInstance.getAllAccounts()
-      if (accounts.length > 0) {
-        // MSAL (Entra ID) — acquire token silently
-        const result = await msalInstance.acquireTokenSilent({
-          ...loginRequest,
-          account: accounts[0],
-        })
-        config.headers.Authorization = `Bearer ${result.accessToken}`
-        return config
-      }
-    }
-
-    // Fallback: Email login JWT — read from Zustand store
-    const token = useAuthStore.getState().sessionToken
-    if (token) config.headers.Authorization = `Bearer ${token}`
-  } catch (error) {
-    if (error instanceof InteractionRequiredAuthError && msalInstance) {
-      msalInstance.loginRedirect(loginRequest)
-    }
+  // Use local session token from Zustand store
+  const token = useAuthStore.getState().sessionToken
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
   return config
 })
