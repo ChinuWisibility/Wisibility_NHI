@@ -47,5 +47,16 @@ services:
       timeout: 5s
       retries: 3
 
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nhi-alps-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
 volumes:
   postgres_data:
