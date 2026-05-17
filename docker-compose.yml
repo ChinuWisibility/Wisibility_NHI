@@ -54,6 +54,11 @@ services:
     container_name: nhi-alps-frontend
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      # This allows Caddy to talk to Tailscale on Windows for HTTPS certs
+      - \\.\pipe\protected_tailscale_socket:\\.\pipe\protected_tailscale_socket
     depends_on:
       - backend
     restart: unless-stopped

@@ -13,15 +13,16 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Stage 2: Serve stage
-FROM nginx:stable-alpine
+# Stage 2: Serve stage (Using Caddy for automatic HTTPS)
+FROM caddy:2-alpine
 
-# Copy the build output from the build stage to nginx html directory
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy the build output from the build stage to Caddy default directory
+COPY --from=build /app/dist /usr/share/caddy
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy Caddyfile configuration
+COPY Caddyfile /etc/caddy/Caddyfile
 
-EXPOSE 80
+# Expose HTTP and HTTPS ports
+EXPOSE 80 443
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

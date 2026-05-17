@@ -1,0 +1,21 @@
+wisibilitysrv01.tail654aab.ts.net {
+    # Serve the frontend files
+    root * /usr/share/caddy
+    file_server
+    try_files {path} /index.html
+
+    # Proxy API requests to the backend container
+    # Note: Using handle_path to strip /api prefix like we did in Nginx
+    handle_path /api/* {
+        reverse_proxy backend:4000
+    }
+
+    # Enable automatic HTTPS via Tailscale
+    tls {
+        get_certificate tailscale
+    }
+
+    log {
+        output stdout
+    }
+}
