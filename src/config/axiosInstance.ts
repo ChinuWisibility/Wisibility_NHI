@@ -9,21 +9,24 @@ const api = axios.create({
 
 api.interceptors.request.use(async (config) => {
   try {
-    const accounts = msalInstance.getAllAccounts()
-    if (accounts.length > 0) {
-      // MSAL (Entra ID) — acquire token silently
-      const result = await msalInstance.acquireTokenSilent({
-        ...loginRequest,
-        account: accounts[0],
-      })
-      config.headers.Authorization = `Bearer ${result.accessToken}`
-    } else {
-      // Email login JWT fallback — read from Zustand store (persisted in localStorage)
-      const token = useAuthStore.getState().sessionToken
-      if (token) config.headers.Authorization = `Bearer ${token}`
+    if (msalInstance) {
+      const accounts = msalInstance.getAllAccounts()
+      if (accounts.length > 0) {
+        // MSAL (Entra ID) — acquire token silently
+        const result = await msalInstance.acquireTokenSilent({
+          ...loginRequest,
+          account: accounts[0],
+        })
+        config.headers.Authorization = `Bearer ${result.accessToken}`
+        return config
+      }
     }
+
+    // Fallback: Email login JWT — read from Zustand store
+    const token = useAuthStore.getState().sessionToken
+    if (token) config.headers.Authorization = `Bearer ${token}`
   } catch (error) {
-    if (error instanceof InteractionRequiredAuthError) {
+    if (error instanceof InteractionRequiredAuthError && msalInstance) {
       msalInstance.loginRedirect(loginRequest)
     }
   }
