@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/utils/cn'
 
-type AccentColor = 'cyan' | 'green' | 'amber' | 'red' | 'purple' | 'none'
+export type AccentColor = 'cyan' | 'green' | 'amber' | 'red' | 'purple' | 'none'
 
 interface CardProps {
   children:  ReactNode
