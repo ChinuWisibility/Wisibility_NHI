@@ -21,6 +21,7 @@ import {
   Cog6ToothIcon
 } from '@heroicons/react/24/outline'
 import { cn } from '@/utils/cn'
+import type { AccentColor } from '@/components/ui/Card'
 
 type TabType = 'overview' | 'identities' | 'config'
 
@@ -402,12 +403,6 @@ function MetadataItem({ icon, label, value }: { icon: React.ReactNode, label: st
       <div className="mt-1 text-muted">{icon}</div>
       <div className="flex flex-col">
         <span className="text-[9px] text-muted uppercase tracking-tighter">{label}</span>
-        <span className="text-[11px] text-bright font-medium">{value}</span>
-      </div>
-    </div>
-  )
-}
-n>
         <span className="text-[11px] text-bright font-medium">{value}</span>
       </div>
     </div>
