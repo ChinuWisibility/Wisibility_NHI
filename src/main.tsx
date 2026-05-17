@@ -9,18 +9,26 @@ import { queryClient } from '@/config/queryClient'
 import App from './App'
 import './styles/global.css'
 
-// Initialize MSAL (registers redirect handler) before mounting React
-msalInstance.initialize().then(() => {
-  createRoot(document.getElementById('root')!).render(
+const renderApp = (instance: any) => {
+  const root = createRoot(document.getElementById('root')!)
+  const content = (
     <StrictMode>
-      <MsalProvider instance={msalInstance}>
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-          {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-        </QueryClientProvider>
-      </MsalProvider>
-    </StrictMode>,
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+      </QueryClientProvider>
+    </StrictMode>
   )
-})
+
+  root.render(
+    instance ? <MsalProvider instance={instance}>{content}</MsalProvider> : content
+  )
+}
+
+if (msalInstance) {
+  msalInstance.initialize().then(() => renderApp(msalInstance))
+} else {
+  renderApp(null)
+}

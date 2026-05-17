@@ -1,6 +1,6 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useContext } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useMsal, useIsAuthenticated } from '@azure/msal-react'
+import { useMsal, useIsAuthenticated, MsalContext } from '@azure/msal-react'
 import { InteractionStatus } from '@azure/msal-browser'
 import { AppShell } from '@/components/layout/AppShell'
 import { Spinner } from '@/components/ui/Spinner'
@@ -12,8 +12,16 @@ import type { UserRole } from '@/types/user.types'
 
 function RouteGuard({ config }: { config: RouteConfig }) {
   const location = useLocation()
-  const { inProgress } = useMsal()
-  const msalAuthenticated  = useIsAuthenticated()
+  
+  // Check if we are inside an MSAL context
+  const msalContext = useContext(MsalContext)
+  const hasMsal = !!msalContext?.instance
+
+  const { inProgress } = hasMsal 
+    ? useMsal() 
+    : { inProgress: InteractionStatus.None }
+    
+  const msalAuthenticated  = hasMsal ? useIsAuthenticated() : false
   const zustandAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const userRole = useAuthStore((s) => s.userRole)
 

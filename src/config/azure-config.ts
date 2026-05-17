@@ -33,4 +33,6 @@ export const loginRequest = {
   ],
 }
 
-export const msalInstance = new PublicClientApplication(msalConfig)
+export const msalInstance = import.meta.env.VITE_AZURE_CLIENT_ID 
+  ? new PublicClientApplication(msalConfig)
+  : null

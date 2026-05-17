@@ -1,5 +1,5 @@
-import { useEffect, useCallback } from 'react'
-import { useMsal, useIsAuthenticated } from '@azure/msal-react'
+import { useEffect, useCallback, useContext } from 'react'
+import { useMsal, useIsAuthenticated, MsalContext } from '@azure/msal-react'
 import { InteractionStatus } from '@azure/msal-browser'
 import { useAuthStore } from '@/stores/authStore'
 import { loginRequest } from '@/config/azure-config'
@@ -16,8 +16,16 @@ function extractRole(claims: Record<string, unknown> | undefined): UserRole {
 }
 
 export function useAuth() {
-  const { instance, accounts, inProgress } = useMsal()
-  const msalAuthenticated = useIsAuthenticated()
+  // Check if we are inside an MSAL context
+  const msalContext = useContext(MsalContext)
+  const hasMsal = !!msalContext?.instance
+
+  // Only call hooks if MSAL is available
+  const { instance, accounts, inProgress } = hasMsal 
+    ? useMsal() 
+    : { instance: null, accounts: [], inProgress: InteractionStatus.None }
+    
+  const msalAuthenticated = hasMsal ? useIsAuthenticated() : false
   const { user, userRole, isAuthenticated, sessionToken, setUser, setToken, logout: storeLogout } = useAuthStore()
 
   const account = accounts[0] ?? null
@@ -45,7 +53,11 @@ export function useAuth() {
   }, [msalAuthenticated, account, inProgress, user, isAuthenticated, sessionToken, setUser, setToken, storeLogout])
 
   const login = useCallback(() => {
-    instance.loginRedirect(loginRequest)
+    if (instance) {
+      instance.loginRedirect(loginRequest)
+    } else {
+      toast.error('Microsoft SSO is not configured on this server.')
+    }
   }, [instance])
 
   const emailLogin = useCallback(async (email: string, password: string) => {
@@ -58,7 +70,7 @@ export function useAuth() {
   const logout = useCallback(async () => {
     await logoutEmail()
     storeLogout()
-    if (msalAuthenticated) {
+    if (msalAuthenticated && instance) {
       instance.logoutRedirect({ postLogoutRedirectUri: '/' })
     }
   }, [instance, msalAuthenticated, storeLogout])
