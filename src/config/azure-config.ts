@@ -33,8 +33,13 @@ export const loginRequest = {
   ],
 }
 
-export const msalInstance = (
+const isRealConfig = 
   import.meta.env.VITE_AZURE_CLIENT_ID && 
-  typeof window !== 'undefined' && 
-  window.isSecureContext
-) ? new PublicClientApplication(msalConfig) : null
+  import.meta.env.VITE_AZURE_CLIENT_ID !== 'your-id' &&
+  import.meta.env.VITE_AZURE_CLIENT_ID.length > 10
+
+const isSecure = typeof window !== 'undefined' && window.isSecureContext
+
+export const msalInstance = (isRealConfig && isSecure)
+  ? new PublicClientApplication(msalConfig)
+  : null
