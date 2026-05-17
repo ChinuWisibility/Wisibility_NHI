@@ -5,8 +5,14 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { useConnectors, useTriggerDiscovery } from '@/hooks/useDiscovery'
-import { ServerIcon, ArrowUpTrayIcon, UserGroupIcon, IdentificationIcon } from '@heroicons/react/24/outline'
+import { useConnectors, useTriggerDiscovery, useTestConnector } from '@/hooks/useDiscovery'
+import { 
+  ServerIcon, 
+  ArrowUpTrayIcon, 
+  UserGroupIcon, 
+  IdentificationIcon,
+  InformationCircleIcon 
+} from '@heroicons/react/24/outline'
 import { discoveryService } from '@/services/discovery.service'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
@@ -14,8 +20,10 @@ import { useNavigate } from 'react-router-dom'
 export default function ConnectorHub() {
   const { data: connectors, isLoading } = useConnectors()
   const triggerDiscovery = useTriggerDiscovery()
+  const testConnector = useTestConnector()
   const [triggering, setTriggering] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [testingId, setTestingId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
 
@@ -28,6 +36,22 @@ export default function ConnectorHub() {
       toast.error('Failed to trigger discovery')
     } finally {
       setTriggering(false)
+    }
+  }
+
+  const handleTest = async (id: string) => {
+    setTestingId(id)
+    try {
+      const result = await testConnector.mutateAsync(id)
+      if (result.connected) {
+        toast.success(`Connection successful (${result.latencyMs}ms)`)
+      } else {
+        toast.error(`Connection failed: ${result.error || 'Unknown error'}`)
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to test connection')
+    } finally {
+      setTestingId(null)
     }
   }
 
@@ -131,16 +155,35 @@ export default function ConnectorHub() {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={(e) => { e.stopPropagation(); /* Edit logic */ }}
+                  onClick={(e) => { 
+                    e.stopPropagation()
+                    navigate(`/discovery/connectors/${c.connectorId}?tab=config`)
+                  }}
                 >
                   Edit
                 </Button>
                 <Button 
                   variant="secondary" 
                   size="sm"
-                  onClick={(e) => { e.stopPropagation(); /* Test logic */ }}
+                  loading={testingId === c.connectorId}
+                  onClick={(e) => { 
+                    e.stopPropagation()
+                    handleTest(c.connectorId)
+                  }}
                 >
                   Test
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="ml-auto text-cyber-cyan hover:bg-cyber-cyan/10"
+                  onClick={(e) => { 
+                    e.stopPropagation()
+                    navigate(`/discovery/connectors/${c.connectorId}?tab=identities`)
+                  }}
+                >
+                  <InformationCircleIcon className="w-4 h-4 mr-1" />
+                  Info
                 </Button>
               </div>
             </Card>

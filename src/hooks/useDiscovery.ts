@@ -33,3 +33,9 @@ export function useDiscoveryRuns() {
     queryFn:  () => discoveryService.listRuns(),
   })
 }
+
+export function useTestConnector() {
+  return useMutation({
+    mutationFn: (id: string) => discoveryService.testConnector(id),
+  })
+}

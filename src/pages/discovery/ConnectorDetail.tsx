@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useParams, Link, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
 import { discoveryService } from '@/services/discovery.service'
 import { nhiService } from '@/services/nhi.service'
+import { useTestConnector, useTriggerDiscovery } from '@/hooks/useDiscovery'
+import toast from 'react-hot-toast'
 import { 
   UserGroupIcon, 
   IdentificationIcon, 
@@ -24,7 +26,56 @@ type TabType = 'overview' | 'identities' | 'config'
 
 export default function ConnectorDetail() {
   const { id } = useParams<{ id: string }>()
-  const [activeTab, setActiveTab] = useState<TabType>('overview')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialTab = (searchParams.get('tab') as TabType) || 'overview'
+  const [activeTab, setActiveTab] = useState<TabType>(initialTab)
+
+  useEffect(() => {
+    const tab = searchParams.get('tab') as TabType
+    if (tab && tab !== activeTab) {
+      setActiveTab(tab)
+    }
+  }, [searchParams])
+
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab)
+    setSearchParams({ tab }, { replace: true })
+  }
+
+  const [testing, setTesting] = useState(false)
+  const [triggering, setTriggering] = useState(false)
+  const testConnector = useTestConnector()
+  const triggerDiscovery = useTriggerDiscovery()
+
+  const handleTest = async () => {
+    if (!id) return
+    setTesting(true)
+    try {
+      const result = await testConnector.mutateAsync(id)
+      if (result.connected) {
+        toast.success(`Connection successful (${result.latencyMs}ms)`)
+      } else {
+        toast.error(`Connection failed: ${result.error || 'Unknown error'}`)
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to test connection')
+    } finally {
+      setTesting(false)
+    }
+  }
+
+  const handleForceRescan = async () => {
+    if (!id || !connector) return
+    setTriggering(true)
+    try {
+      await triggerDiscovery.mutateAsync([connector.connectorType])
+      toast.success(`Discovery scan started for ${connector.displayName}`)
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to trigger discovery')
+    } finally {
+      setTriggering(false)
+    }
+  }
 
   const { data: connector, isLoading: loadingConnector } = useQuery({
     queryKey: ['connector', id],
@@ -90,7 +141,7 @@ export default function ConnectorDetail() {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as TabType)}
+            onClick={() => handleTabChange(tab.id as TabType)}
             className={cn(
               'flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors border-b-2',
               activeTab === tab.id
@@ -303,8 +354,20 @@ export default function ConnectorDetail() {
                      <span className="font-mono text-[10px] text-muted">{connector.lastTestAt ? new Date(connector.lastTestAt).toLocaleString() : 'Never'}</span>
                    </div>
                    <div className="pt-4 flex gap-2">
-                     <button className="flex-1 bg-surface-2 border border-surface-border text-bright text-[10px] font-bold py-2 rounded hover:bg-surface-3 transition-colors uppercase">Test Connection</button>
-                     <button className="flex-1 bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan text-[10px] font-bold py-2 rounded hover:bg-cyber-cyan/20 transition-colors uppercase">Force Re-scan</button>
+                     <button 
+                        disabled={testing}
+                        onClick={handleTest}
+                        className="flex-1 bg-surface-2 border border-surface-border text-bright text-[10px] font-bold py-2 rounded hover:bg-surface-3 transition-colors uppercase disabled:opacity-50"
+                     >
+                        {testing ? 'Testing...' : 'Test Connection'}
+                     </button>
+                     <button 
+                        disabled={triggering}
+                        onClick={handleForceRescan}
+                        className="flex-1 bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan text-[10px] font-bold py-2 rounded hover:bg-cyber-cyan/20 transition-colors uppercase disabled:opacity-50"
+                     >
+                        {triggering ? 'Triggering...' : 'Force Re-scan'}
+                     </button>
                    </div>
                 </div>
               </Card>
