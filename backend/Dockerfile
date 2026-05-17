@@ -17,8 +17,10 @@ FROM node:20-alpine
 WORKDIR /app
 COPY --from=deps  /app/node_modules ./node_modules
 COPY --from=build /app/dist         ./dist
+COPY --from=build /app/src          ./src
 COPY package*.json ./
 COPY prisma.config.ts ./
 COPY prisma ./prisma
+COPY scripts ./scripts
 EXPOSE 4000
 CMD ["node", "dist/index.js"]
