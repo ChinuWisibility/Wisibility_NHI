@@ -1,11 +1,16 @@
-wisibilitysrv01.tail654aab.ts.net:8443, 100.84.207.35:8443, localhost:8443 {
+{
+    # Global options
+    # Set the default HTTPS port to 8443 so redirects work correctly
+    https_port 8443
+}
+
+wisibilitysrv01.tail654aab.ts.net, 100.84.207.35, localhost {
     # Serve the frontend files
     root * /usr/share/caddy
     file_server
     try_files {path} /index.html
 
     # Proxy API requests to the backend container
-    # Note: Using handle_path to strip /api prefix like we did in Nginx
     handle_path /api/* {
         reverse_proxy backend:4000
     }
