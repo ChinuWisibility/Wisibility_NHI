@@ -1,25 +1,18 @@
 {
-    https_port 8443
+    auto_https off
 }
 
-wisibilitysrv01.tail654aab.ts.net, 100.84.207.35, localhost {
-    # Proxy API requests FIRST
+:80 {
     handle /api/* {
         handle_path /api/* {
             reverse_proxy backend:4000
         }
     }
 
-    # Serve static files for everything else
     handle {
         root * /usr/share/caddy
         file_server
         try_files {path} /index.html
-    }
-
-    # Enable automatic HTTPS via Tailscale
-    tls {
-        get_certificate tailscale
     }
 
     log {
