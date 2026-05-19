@@ -1,4 +1,4 @@
-wisibilitysrv01.tail654aab.ts.net:8443 {
+wisibilitysrv01.tail654aab.ts.net:8443, 100.84.207.35:8443, localhost:8443 {
     # Serve the frontend files
     root * /usr/share/caddy
     file_server
