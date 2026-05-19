@@ -36,7 +36,8 @@
       "PowerShell($env:PGPASSWORD = \"DB@12345\"; & \"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -c \"CREATE DATABASE nhi_alps;\" 2>&1)",
       "PowerShell(curl.exe -s http://localhost:4000/health)",
       "PowerShell(curl.exe -s -H \"Authorization: Bearer dev-jwt-L0\" http://localhost:4000/nhi/summary)",
-      "PowerShell(python -m json.tool 2>&1)"
+      "PowerShell(python -m json.tool 2>&1)",
+      "PowerShell(docker exec nhi-alps-backend *)"
     ]
   }
 }

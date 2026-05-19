@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuth } from '@/hooks/useAuth'
 import { useAuthStore } from '@/stores/authStore'
-import { createLocalUser } from '@/services/localUsers.service'
+import { registerWithEmail } from '@/services/auth.service'
 import { ROLE_HOME } from '@/config/routes'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
@@ -86,9 +86,9 @@ export default function Login() {
   const onRegister = async (data: RegisterData) => {
     setLoading(true)
     try {
-      await createLocalUser(data.name, data.email, data.password, data.role)
-      toast.success('Account created! Signing you in…')
-      const result = await emailLogin(data.email, data.password)
+      const result = await registerWithEmail(data.name, data.email, data.password, data.role)
+      setToken(result.token)
+      setUser(result.user)
       navigate(location.state?.from || ROLE_HOME[result.user.role], { replace: true })
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Could not create account')
