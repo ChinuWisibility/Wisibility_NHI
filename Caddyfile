@@ -1,18 +1,20 @@
 {
-    # Global options
-    # Set the default HTTPS port to 8443 so redirects work correctly
     https_port 8443
 }
 
 wisibilitysrv01.tail654aab.ts.net, 100.84.207.35, localhost {
-    # Serve the frontend files
-    root * /usr/share/caddy
-    file_server
-    try_files {path} /index.html
+    # Proxy API requests FIRST
+    handle /api/* {
+        handle_path /api/* {
+            reverse_proxy backend:4000
+        }
+    }
 
-    # Proxy API requests to the backend container
-    handle_path /api/* {
-        reverse_proxy backend:4000
+    # Serve static files for everything else
+    handle {
+        root * /usr/share/caddy
+        file_server
+        try_files {path} /index.html
     }
 
     # Enable automatic HTTPS via Tailscale
