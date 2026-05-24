@@ -1,4 +1,4 @@
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 
 # Install build tools for native modules (like bcrypt)
 RUN apk add --no-cache \
@@ -14,9 +14,9 @@ RUN apk add --no-cache \
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 
 # Install build tools for Prisma and TypeScript compilation
 RUN apk add --no-cache \
@@ -27,13 +27,13 @@ RUN apk add --no-cache \
 WORKDIR /app
 COPY package*.json tsconfig.json prisma.config.ts ./
 COPY prisma ./prisma
-RUN npm ci
+RUN npm install
 # Generate Prisma client before compiling TypeScript
 RUN npx prisma generate
 COPY src ./src
 RUN npm run build
 
-FROM node:20-alpine
+FROM node:22-alpine
 # Install runtime libraries for canvas (if needed by libraries like jspdf/node-canvas)
 RUN apk add --no-cache \
     cairo \

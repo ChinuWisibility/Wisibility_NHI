@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 
 # Install system dependencies for node-canvas and other native modules
 # These are often required for libraries like jspdf, html2canvas, or during tests.
@@ -18,7 +18,7 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
