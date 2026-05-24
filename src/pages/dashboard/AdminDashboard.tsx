@@ -321,6 +321,7 @@ function IdentitySphere() {
     }
 
     function draw() {
+      if (!canvas || !ctx) return
       const W = canvas.width, H = canvas.height
       if (!W || !H) { rafRef.current = requestAnimationFrame(draw); return }
       const cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.85
