@@ -71,7 +71,7 @@ export default function InventoryList() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="bg-surface-2 border-b border-surface-border">
-                  {['Display Name', 'Type', 'Risk', 'Environment', 'Owner', 'Last Seen'].map((h) => (
+                  {['Display Name', 'Type', 'Risk', 'Environment', 'Owner', 'Connector', 'Last Seen'].map((h) => (
                     <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">
                       {h}
                     </th>
@@ -96,6 +96,9 @@ export default function InventoryList() {
                     </td>
                     <td className="px-4 py-3 font-mono text-muted">{nhi.environment}</td>
                     <td className="px-4 py-3 text-main">{nhi.ownerTeam ?? '—'}</td>
+                    <td className="px-4 py-3">
+                      <Badge color="cyan">{nhi.sourceConnector}</Badge>
+                    </td>
                     <td className="px-4 py-3 font-mono text-muted">{formatRelativeTime(nhi.lastDiscovered)}</td>
                   </tr>
                 ))}

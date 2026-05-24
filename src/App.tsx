@@ -2,6 +2,7 @@ import { Suspense, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import { Spinner } from '@/components/ui/Spinner'
+import { Toaster } from 'react-hot-toast'
 import { useAuthStore } from '@/stores/authStore'
 import { useUIStore } from '@/stores/uiStore'
 import { ROLE_LEVELS } from '@/types/user.types'
@@ -48,33 +49,60 @@ export default function App() {
   }, [theme])
 
   return (
-    <Suspense fallback={<LoadingFallback />}>
+    <>
       <Routes>
-        {routes.map((route) => {
-          if (route.isPublic) {
-            return <Route key={route.path} path={route.path} element={route.element} />
-          }
-          return (
+        {/* Public Routes */}
+        {routes.filter(r => r.isPublic).map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <Suspense fallback={<LoadingFallback />}>
+                {route.element}
+              </Suspense>
+            }
+          />
+        ))}
+
+        {/* Private Routes (Wrapped in AppShell) */}
+        <Route element={<AppShell />}>
+          {routes.filter(r => !r.isPublic).map((route) => (
             <Route
               key={route.path}
               path={route.path}
               element={
-                <AppShell>
+                <Suspense fallback={<LoadingFallback />}>
                   <RouteGuard config={route} />
-                </AppShell>
+                </Suspense>
               }
             />
-          )
-        })}
+          ))}
+        </Route>
+
+        {/* Root Redirect */}
         <Route
           path="/"
           element={<Navigate to={userRole ? ROLE_HOME[userRole] : '/login'} replace />}
         />
+
+        {/* Catch-all Redirect */}
         <Route
           path="*"
           element={<Navigate to={userRole ? ROLE_HOME[userRole] : '/login'} replace />}
         />
       </Routes>
-    </Suspense>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: 'var(--color-surface-2)',
+            color:      'var(--color-text-main)',
+            border:     '1px solid var(--color-surface-border)',
+            fontFamily: 'IBM Plex Mono, monospace',
+            fontSize:   '12px',
+          },
+        }}
+      />
+    </>
   )
 }

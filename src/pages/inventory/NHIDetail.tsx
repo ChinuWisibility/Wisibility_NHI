@@ -47,7 +47,6 @@ export default function NHIDetail() {
               { label: 'Created',     value: formatDate(data.createdAt) },
               { label: 'Age',         value: formatCredentialAge(data.createdAt) },
               { label: 'Vault Path',  value: data.vaultPath ?? '—' },
-              { label: 'Source',      value: data.sourceConnector },
             ].map(({ label, value }) => (
               <div key={label}>
                 <dt className="font-mono text-[9px] uppercase tracking-wider text-muted">{label}</dt>
@@ -57,17 +56,44 @@ export default function NHIDetail() {
           </dl>
         </Card>
       </div>
-      {/* Tags */}
-      {Object.keys(data.tags).length > 0 && (
-        <Card>
-          <CardHeader>Tags</CardHeader>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(data.tags).map(([k, v]) => (
-              <Badge key={k} color="dim">{k}: {v}</Badge>
-            ))}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+        {/* Connector Details */}
+        <Card accent="cyan">
+          <CardHeader>Connector Information</CardHeader>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-surface-2 border border-surface-border rounded flex items-center justify-center font-bold text-cyber-cyan">
+              {data.sourceConnector.slice(0, 2).toUpperCase()}
+            </div>
+            <div>
+              <p className="text-xs font-bold text-bright">{data.sourceConnector}</p>
+              <p className="font-mono text-[9px] text-muted mt-1 uppercase tracking-wider">Source System</p>
+            </div>
+          </div>
+          <div className="mt-4 pt-4 border-t border-surface-border grid grid-cols-2 gap-4">
+            <div>
+              <p className="font-mono text-[8px] text-muted uppercase mb-1">Last Discovered</p>
+              <p className="text-[11px] text-main">{formatDate(data.lastDiscovered)}</p>
+            </div>
+            <div>
+              <p className="font-mono text-[8px] text-muted uppercase mb-1">Discovery Status</p>
+              <Badge color="green">SUCCESS</Badge>
+            </div>
           </div>
         </Card>
-      )}
+
+        {/* Tags */}
+        {Object.keys(data.tags).length > 0 && (
+          <Card>
+            <CardHeader>Metadata Tags</CardHeader>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(data.tags).map(([k, v]) => (
+                <Badge key={k} color="dim">{k}: {v}</Badge>
+              ))}
+            </div>
+          </Card>
+        )}
+      </div>
     </div>
   )
 }
