@@ -27,11 +27,26 @@ const config: Config = {
         main:   'var(--color-text-main)',
         muted:  'var(--color-text-muted)',
         bright: 'var(--color-text-bright)',
+        brand: {
+          DEFAULT: '#2563EB',
+          hover:   '#1D4ED8',
+          light:   '#3b82f6',
+        },
       },
       fontFamily: {
-        display: ['Orbitron', 'sans-serif'],
-        body:    ['IBM Plex Sans', 'sans-serif'],
-        mono:    ['IBM Plex Mono', 'monospace'],
+        display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+        body:    ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+        mono:    ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+      },
+      borderRadius: {
+        clay: '14px',
+      },
+      boxShadow: {
+        clay: '0 3px 0 rgba(37,99,235,0.18), 0 6px 12px rgba(0,0,0,0.04)',
+        'clay-lg': '0 8px 0 rgba(30,58,138,0.35), 0 12px 24px rgba(37,99,235,0.25)',
+        'clay-card': '0 16px 0 rgba(37,99,235,0.22), 0 24px 48px rgba(0,0,0,0.10)',
+        card: '0 1px 2px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.06)',
+        'card-hover': '0 4px 16px rgba(15,23,42,0.10), 0 0 0 1px rgba(37,99,235,0.18)',
       },
       keyframes: {
         'pulse-slow': {

@@ -19,7 +19,7 @@ interface NodeDetail {
 
 // ── Colours ───────────────────────────────────────────────────────────────────
 const RC: Record<Risk, string> = {
-  critical: '#FF4560', high: '#FF7A45', medium: '#FFB020', low: '#00C8F0', veryLow: '#00E887',
+  critical: '#DC2626', high: '#EA580C', medium: '#D97706', low: '#2563EB', veryLow: '#16A34A',
 }
 const RISK_LABEL: Record<Risk, string> = {
   critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low', veryLow: 'Very Low',
@@ -42,50 +42,50 @@ const NODE_DETAILS: Record<string, NodeDetail> = {
 
 // ── Static dashboard data ─────────────────────────────────────────────────────
 const IDENTITY_CONTEXT = [
-  { label: 'Employees',        count: 12580, color: '#00C8F0' },
-  { label: 'Contractors',      count: 2345,  color: '#A855F7' },
-  { label: 'Vendors',          count: 1089,  color: '#FFB020' },
-  { label: 'Service Accounts', count: 2134,  color: '#00E887' },
-  { label: 'Bots',             count: 320,   color: '#FF7A45' },
+  { label: 'Employees',        count: 12580, color: '#2563EB' },
+  { label: 'Contractors',      count: 2345,  color: '#7C3AED' },
+  { label: 'Vendors',          count: 1089,  color: '#D97706' },
+  { label: 'Service Accounts', count: 2134,  color: '#16A34A' },
+  { label: 'Bots',             count: 320,   color: '#EA580C' },
 ]
 const LIFECYCLE = [
-  { label: 'Joiners (30 days)',  count: 1234, delta: '+8% vs last month',  color: '#00E887' },
-  { label: 'Movers (30 days)',   count: 2345, delta: '+12% vs last month', color: '#00C8F0' },
-  { label: 'Leavers (30 days)', count: 532,  delta: '-3% vs last month',  color: '#FFB020' },
-  { label: 'Dormant (90+ days)',count: 1897, delta: '+5% vs last month',  color: '#FF4560' },
+  { label: 'Joiners (30 days)',  count: 1234, delta: '+8% vs last month',  color: '#16A34A' },
+  { label: 'Movers (30 days)',   count: 2345, delta: '+12% vs last month', color: '#2563EB' },
+  { label: 'Leavers (30 days)', count: 532,  delta: '-3% vs last month',  color: '#D97706' },
+  { label: 'Dormant (90+ days)',count: 1897, delta: '+5% vs last month',  color: '#DC2626' },
 ]
 const RISK_DIST = [
-  { name: 'Critical', value: 1245, color: '#FF4560' },
-  { name: 'High',     value: 2640, color: '#FF7A45' },
-  { name: 'Medium',   value: 6125, color: '#FFB020' },
-  { name: 'Low',      value: 5280, color: '#00C8F0' },
-  { name: 'Very Low', value: 1178, color: '#00E887' },
+  { name: 'Critical', value: 1245, color: '#DC2626' },
+  { name: 'High',     value: 2640, color: '#EA580C' },
+  { name: 'Medium',   value: 6125, color: '#D97706' },
+  { name: 'Low',      value: 5280, color: '#2563EB' },
+  { name: 'Very Low', value: 1178, color: '#16A34A' },
 ]
 const ACCESS_COMPLEXITY = [
-  { label: 'Very High', value: 2153, color: '#FF4560' },
-  { label: 'High',      value: 3328, color: '#FF7A45' },
-  { label: 'Medium',    value: 5688, color: '#FFB020' },
-  { label: 'Low',       value: 3876, color: '#00C8F0' },
-  { label: 'Very Low',  value: 1423, color: '#00E887' },
+  { label: 'Very High', value: 2153, color: '#DC2626' },
+  { label: 'High',      value: 3328, color: '#EA580C' },
+  { label: 'Medium',    value: 5688, color: '#D97706' },
+  { label: 'Low',       value: 3876, color: '#2563EB' },
+  { label: 'Very Low',  value: 1423, color: '#16A34A' },
 ]
 const TOP_DRIVERS = [
-  { label: 'SoD Violations',              count: 1234, color: '#FF4560' },
-  { label: 'Excessive Privileges',        count: 987,  color: '#FF7A45' },
-  { label: 'Dormant Privileged Accounts', count: 765,  color: '#FFB020' },
-  { label: 'Unused Access',              count: 2134, color: '#00C8F0' },
-  { label: 'Critical App Access',        count: 1098, color: '#A855F7' },
+  { label: 'SoD Violations',              count: 1234, color: '#DC2626' },
+  { label: 'Excessive Privileges',        count: 987,  color: '#EA580C' },
+  { label: 'Dormant Privileged Accounts', count: 765,  color: '#D97706' },
+  { label: 'Unused Access',              count: 2134, color: '#2563EB' },
+  { label: 'Critical App Access',        count: 1098, color: '#7C3AED' },
 ]
 const INSIGHTS = [
-  { label: 'High Risk Identities',     value: 1245, sub: '7.6% of Total',  delta: '+12% vs last month', color: '#FF4560' },
-  { label: 'Toxic Access Combinations',value: 892,  sub: 'Identities',     delta: '+8% vs last month',  color: '#FF7A45' },
-  { label: 'Dormant Accounts',         value: 1987, sub: '12.1% of Total', delta: '+5% vs last month',  color: '#FFB020' },
-  { label: 'Excess Access',            value: 2134, sub: '13.0% of Total', delta: '+10% vs last month', color: '#00C8F0' },
+  { label: 'High Risk Identities',     value: 1245, sub: '7.6% of Total',  delta: '+12% vs last month', color: '#DC2626' },
+  { label: 'Toxic Access Combinations',value: 892,  sub: 'Identities',     delta: '+8% vs last month',  color: '#EA580C' },
+  { label: 'Dormant Accounts',         value: 1987, sub: '12.1% of Total', delta: '+5% vs last month',  color: '#D97706' },
+  { label: 'Excess Access',            value: 2134, sub: '13.0% of Total', delta: '+10% vs last month', color: '#2563EB' },
 ]
 const BIZ_IMPACT = [
-  { label: 'Est. Financial Exposure',              value: '$3.2M',  color: '#FF4560', icon: '💰' },
-  { label: 'Critical Identities Requiring Action', value: '1,245',  color: '#FF7A45', icon: '⚠️' },
-  { label: 'SoD Violations Identified',            value: '287',    color: '#FFB020', icon: '🔒' },
-  { label: 'Certification Completion',             value: '92%',    color: '#00E887', icon: '✅' },
+  { label: 'Est. Financial Exposure',              value: '$3.2M',  color: '#DC2626', icon: '💰' },
+  { label: 'Critical Identities Requiring Action', value: '1,245',  color: '#EA580C', icon: '⚠️' },
+  { label: 'SoD Violations Identified',            value: '287',    color: '#D97706', icon: '🔒' },
+  { label: 'Certification Completion',             value: '92%',    color: '#16A34A', icon: '✅' },
 ]
 
 // ── Sphere nodes ──────────────────────────────────────────────────────────────
@@ -132,7 +132,7 @@ function NodeDetailPopup({ node, x, y, containerW, containerH, onClose }: {
   const left = Math.min(Math.max(x - W / 2, 8), containerW - W - 8)
   const top  = y + 20 + H > containerH ? y - H - 12 : y + 20
 
-  const scoreColor = (s: number) => s >= 80 ? '#FF4560' : s >= 60 ? '#FFB020' : s >= 40 ? '#00C8F0' : '#00E887'
+  const scoreColor = (s: number) => s >= 80 ? '#DC2626' : s >= 60 ? '#D97706' : s >= 40 ? '#2563EB' : '#16A34A'
 
   return (
     <motion.div
@@ -330,8 +330,8 @@ function IdentitySphere() {
       ctx.clearRect(0, 0, W, H)
 
       const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.3)
-      bg.addColorStop(0, 'rgba(0,50,100,0.35)')
-      bg.addColorStop(1, 'rgba(4,8,15,0)')
+      bg.addColorStop(0, 'rgba(37,99,235,0.10)')
+      bg.addColorStop(1, 'rgba(248,250,252,0)')
       ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H)
 
       // Grid
@@ -343,7 +343,7 @@ function IdentitySphere() {
         for (let lon = 0; lon <= 362; lon += 4) {
           const { px, py, z } = project((lon * Math.PI) / 180, phi, ang, cx, cy, R)
           const a = ((z + 1) / 2) * 0.15 + 0.03
-          ctx.strokeStyle = `rgba(0,200,240,${a.toFixed(2)})`; ctx.lineWidth = 0.5
+          ctx.strokeStyle = `rgba(37,99,235,${a.toFixed(2)})`; ctx.lineWidth = 0.5
           f ? (ctx.moveTo(px, py), f = false) : ctx.lineTo(px, py)
         }
         ctx.stroke()
@@ -353,7 +353,7 @@ function IdentitySphere() {
         for (let lat = -90; lat <= 92; lat += 4) {
           const { px, py, z } = project((lon * Math.PI) / 180, (lat * Math.PI) / 180, ang, cx, cy, R)
           const a = ((z + 1) / 2) * 0.15 + 0.03
-          ctx.strokeStyle = `rgba(0,200,240,${a.toFixed(2)})`; ctx.lineWidth = 0.5
+          ctx.strokeStyle = `rgba(37,99,235,${a.toFixed(2)})`; ctx.lineWidth = 0.5
           f ? (ctx.moveTo(px, py), f = false) : ctx.lineTo(px, py)
         }
         ctx.stroke()
@@ -412,11 +412,11 @@ function IdentitySphere() {
         ctx.save(); ctx.globalAlpha = ta
         ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(lx, ly)
         ctx.strokeStyle = RC[n.risk] + '90'; ctx.lineWidth = 0.8; ctx.stroke()
-        ctx.font = 'bold 9px "IBM Plex Mono",monospace'
-        ctx.fillStyle = '#e2eeff'; ctx.textAlign = right ? 'left' : 'right'
+        ctx.font = 'bold 9px "Plus Jakarta Sans",sans-serif'
+        ctx.fillStyle = '#0F172A'; ctx.textAlign = right ? 'left' : 'right'
         ctx.fillText(n.label, lx + (right ? 3 : -3), ly)
         if (n.sublabel) {
-          ctx.font = '8px "IBM Plex Mono",monospace'; ctx.fillStyle = '#5a7a9a'
+          ctx.font = '8px "Plus Jakarta Sans",sans-serif'; ctx.fillStyle = '#64748B'
           ctx.fillText(n.sublabel, lx + (right ? 3 : -3), ly + 11)
         }
         ctx.restore()
@@ -461,11 +461,11 @@ export default function AdminDashboard() {
     <div className="animate-fade-up space-y-3 pb-6">
 
       <div className="text-center pt-1">
-        <p className="font-mono text-[9px] tracking-[4px] text-cyber-cyan opacity-60 uppercase mb-1">
+        <p className="text-[10px] font-bold tracking-[0.12em] text-cyber-cyan uppercase mb-1">
           3 Dimensional Identity Intelligence View
         </p>
-        <h1 className="font-display text-xl font-bold text-bright tracking-widest">
-          WISBILITY <span className="text-cyber-cyan">IDENTITY SPHERE</span>
+        <h1 className="text-xl font-extrabold text-bright tracking-tight">
+          Wisibility <span className="text-cyber-cyan">Identity Graph</span>
         </h1>
       </div>
 
@@ -474,20 +474,20 @@ export default function AdminDashboard() {
         {/* LEFT */}
         <div className="w-52 shrink-0 flex flex-col gap-2 overflow-y-auto pr-0.5">
           <div className="bg-surface border border-surface-border rounded-lg p-3">
-            <p className="font-mono text-[9px] tracking-[2px] text-cyber-cyan uppercase mb-2">Identity Sphere Explorer</p>
+            <p className="text-[11px] font-bold tracking-wide text-blue-800 uppercase mb-2">Identity Sphere Explorer</p>
             <div className="relative mb-2">
-              <MagnifyingGlassIcon className="absolute left-2 top-2 w-3 h-3 text-muted" />
-              <input placeholder="Search Identity" className="w-full bg-surface-2 border border-surface-border rounded pl-6 pr-2 py-1.5 text-[11px] text-main placeholder:text-muted focus:outline-none focus:border-cyber-cyan/50 transition-colors" />
+              <MagnifyingGlassIcon className="absolute left-2 top-2 w-3 h-3 text-slate-500" />
+              <input placeholder="Search Identity" className="w-full bg-white border border-slate-300 rounded pl-6 pr-2 py-1.5 text-[11px] text-main placeholder:text-slate-500 focus:outline-none focus:border-brand transition-colors" />
             </div>
-            <select className="w-full bg-surface-2 border border-surface-border rounded px-2 py-1.5 text-[11px] text-muted focus:outline-none">
+            <select className="w-full bg-white border border-slate-300 rounded px-2 py-1.5 text-[11px] text-slate-800 focus:outline-none">
               <option>All Identities</option>
             </select>
           </div>
 
           <div className="bg-surface border border-surface-border rounded-lg p-3">
-            <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-2">Identity Context (X)</p>
+            <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-2">Identity Context (X)</p>
             {IDENTITY_CONTEXT.map((item) => (
-              <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-surface-border/40 last:border-0">
+              <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-surface-border last:border-0">
                 <span className="text-[11px] text-main">{item.label}</span>
                 <span className="font-mono text-[11px] font-bold" style={{ color: item.color }}>{item.count.toLocaleString()}</span>
               </div>
@@ -496,9 +496,9 @@ export default function AdminDashboard() {
           </div>
 
           <div className="bg-surface border border-surface-border rounded-lg p-3">
-            <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-2">Lifecycle Summary</p>
+            <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-2">Lifecycle Summary</p>
             {LIFECYCLE.map((item) => (
-              <div key={item.label} className="flex items-start justify-between py-1.5 border-b border-surface-border/40 last:border-0">
+              <div key={item.label} className="flex items-start justify-between py-1.5 border-b border-surface-border last:border-0">
                 <div>
                   <p className="text-[11px] text-main">{item.label}</p>
                   <p className="font-mono text-[9px] mt-0.5" style={{ color: item.color }}>{item.delta}</p>
@@ -513,23 +513,23 @@ export default function AdminDashboard() {
         {/* CENTER */}
         <div className="flex-1 relative bg-surface border border-surface-border rounded-lg overflow-hidden">
           <div className="absolute top-2 left-1/2 -translate-x-1/2 text-center z-10 pointer-events-none">
-            <p className="font-mono text-[7px] tracking-[2px] text-cyber-red uppercase">Z Axis · Risk &amp; Business Impact</p>
-            <p className="font-mono text-[7px] text-cyber-red">▲ High Impact / High Risk</p>
+            <p className="text-[10px] font-semibold tracking-[2px] text-cyber-red uppercase">Z Axis · Risk &amp; Business Impact</p>
+            <p className="text-[10px] font-semibold text-cyber-red">▲ High Impact / High Risk</p>
           </div>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center z-10 pointer-events-none">
-            <p className="font-mono text-[7px] text-cyber-green">Low Impact / Low Risk ▼</p>
+            <p className="text-[10px] font-semibold text-cyber-green">Low Impact / Low Risk ▼</p>
           </div>
           <div className="absolute left-1 top-1/2 -translate-y-1/2 z-10 pointer-events-none" style={{ writingMode: 'vertical-rl' }}>
-            <p className="font-mono text-[7px] tracking-[2px] text-cyber-cyan uppercase" style={{ transform: 'rotate(180deg)' }}>X Axis · Identity Context</p>
+            <p className="text-[10px] font-semibold tracking-[2px] text-cyber-cyan uppercase" style={{ transform: 'rotate(180deg)' }}>X Axis · Identity Context</p>
           </div>
           <div className="absolute left-2 bottom-8 z-10 pointer-events-none">
-            <p className="font-mono text-[7px] text-muted">Low Context</p>
+            <p className="text-[10px] font-semibold text-muted">Low Context</p>
           </div>
           <div className="absolute right-1 top-1/2 -translate-y-1/2 z-10 pointer-events-none" style={{ writingMode: 'vertical-rl' }}>
-            <p className="font-mono text-[7px] tracking-[2px] text-cyber-amber uppercase">Y Axis · Access Complexity</p>
+            <p className="text-[10px] font-semibold tracking-[2px] text-cyber-amber uppercase">Y Axis · Access Complexity</p>
           </div>
           <div className="absolute right-2 bottom-8 z-10 pointer-events-none">
-            <p className="font-mono text-[7px] text-muted">Low Complexity</p>
+            <p className="text-[10px] font-semibold text-muted">Low Complexity</p>
           </div>
           <IdentitySphere />
         </div>
@@ -537,7 +537,7 @@ export default function AdminDashboard() {
         {/* RIGHT */}
         <div className="w-64 shrink-0 flex flex-col gap-2 overflow-y-auto pl-0.5">
           <div className="bg-surface border border-surface-border rounded-lg p-3">
-            <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-2">Identity Legend</p>
+            <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-2">Identity Legend</p>
             <div className="space-y-1">
               {Object.entries(RC).map(([key, color]) => (
                 <div key={key} className="flex items-center gap-2">
@@ -546,7 +546,7 @@ export default function AdminDashboard() {
                 </div>
               ))}
               <div className="border-t border-surface-border mt-1.5 pt-1.5 space-y-1">
-                {[['Employee', '#00C8F0'], ['Contractor', '#A855F7'], ['Service Account', '#00E887'], ['Bot / Non Human', '#FF7A45']].map(([label, color]) => (
+                {[['Employee', '#2563EB'], ['Contractor', '#7C3AED'], ['Service Account', '#16A34A'], ['Bot / Non Human', '#EA580C']].map(([label, color]) => (
                   <div key={label} className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-sm border flex-shrink-0" style={{ borderColor: color }} />
                     <span className="text-[11px] text-muted">{label}</span>
@@ -557,7 +557,7 @@ export default function AdminDashboard() {
           </div>
 
           <div className="bg-surface border border-surface-border rounded-lg p-3">
-            <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-2">Risk Distribution (Z)</p>
+            <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-2">Risk Distribution (Z)</p>
             <div className="flex items-center gap-2">
               <div className="relative shrink-0" style={{ width: 96, height: 96 }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -569,7 +569,7 @@ export default function AdminDashboard() {
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                   <span className="font-display text-[11px] font-bold text-bright leading-tight">{TOTAL_IDS.toLocaleString()}</span>
-                  <span className="font-mono text-[7px] text-muted">Identities</span>
+                  <span className="text-[10px] font-semibold text-muted">Identities</span>
                 </div>
               </div>
               <div className="flex-1 space-y-1">
@@ -588,7 +588,7 @@ export default function AdminDashboard() {
           </div>
 
           <div className="bg-surface border border-surface-border rounded-lg p-3">
-            <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-0.5">Access Complexity (Y)</p>
+            <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-0.5">Access Complexity (Y)</p>
             <p className="text-[9px] text-muted mb-2">By Complexity Score</p>
             {ACCESS_COMPLEXITY.map((item) => (
               <div key={item.label} className="mb-2">
@@ -605,9 +605,9 @@ export default function AdminDashboard() {
           </div>
 
           <div className="bg-surface border border-surface-border rounded-lg p-3">
-            <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-2">Top Risk Drivers</p>
+            <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-2">Top Risk Drivers</p>
             {TOP_DRIVERS.map((item) => (
-              <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-surface-border/40 last:border-0">
+              <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-surface-border last:border-0">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: item.color }} />
                   <span className="text-[11px] text-main">{item.label}</span>
@@ -622,7 +622,7 @@ export default function AdminDashboard() {
       {/* Bottom */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-surface border border-surface-border rounded-lg p-4">
-          <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-3">Identity Sphere Insights</p>
+          <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-3">Identity Sphere Insights</p>
           <div className="grid grid-cols-2 gap-2">
             {INSIGHTS.map((item, i) => (
               <motion.div key={item.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }} className="bg-surface-2 border border-surface-border rounded-lg p-3">
@@ -636,7 +636,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-surface border border-surface-border rounded-lg p-4 flex flex-col">
-          <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-3">Identity Trust Score Distribution</p>
+          <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-3">Identity Trust Score Distribution</p>
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <p className="font-display text-5xl font-bold text-bright">54</p>
@@ -645,7 +645,7 @@ export default function AdminDashboard() {
           </div>
           <div className="mt-4">
             <div className="relative h-3 rounded-full overflow-hidden">
-              <div className="absolute inset-0 rounded-full" style={{ background: 'linear-gradient(to right, #FF4560 0%, #FFB020 40%, #00C8F0 70%, #00E887 100%)' }} />
+              <div className="absolute inset-0 rounded-full" style={{ background: 'linear-gradient(to right, #DC2626 0%, #D97706 40%, #2563EB 70%, #16A34A 100%)' }} />
               <div className="absolute top-0 bottom-0 w-px bg-white/90" style={{ left: '54%' }} />
             </div>
             <div className="flex justify-between mt-1">
@@ -659,7 +659,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-surface border border-surface-border rounded-lg p-4">
-          <p className="font-mono text-[9px] tracking-[2px] text-muted uppercase mb-3">Business Impact Preview</p>
+          <p className="text-[11px] font-bold tracking-wide text-slate-600 uppercase mb-3">Business Impact Preview</p>
           <div className="grid grid-cols-2 gap-2">
             {BIZ_IMPACT.map((item, i) => (
               <motion.div key={item.label} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.08 }} className="bg-surface-2 border border-surface-border rounded-lg p-3 text-center">
@@ -672,7 +672,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-8 flex-wrap py-1 border-t border-surface-border/50 pt-3">
+      <div className="flex items-center justify-center gap-8 flex-wrap py-1 border-t border-surface-border pt-3">
         {[
           { icon: '🔭', label: '360° Identity Visibility',  sub: 'Unified view of all identity types'   },
           { icon: '🤖', label: 'AI Powered Risk Scoring',   sub: 'Continuous risk evaluation'           },

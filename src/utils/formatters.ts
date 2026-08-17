@@ -27,36 +27,36 @@ export function formatRiskLevel(level: RiskLevel): string {
 
 export function riskLevelColor(level: RiskLevel): string {
   return {
-    CRITICAL: 'text-cyber-red',
-    HIGH:     'text-cyber-amber',
-    MEDIUM:   'text-yellow-400',
-    LOW:      'text-cyber-green',
+    CRITICAL: 'text-red-700 dark:text-cyber-red',
+    HIGH:     'text-amber-700 dark:text-cyber-amber',
+    MEDIUM:   'text-orange-700 dark:text-cyber-amber',
+    LOW:      'text-green-700 dark:text-cyber-green',
   }[level]
 }
 
 export function riskLevelBg(level: RiskLevel): string {
   return {
-    CRITICAL: 'bg-cyber-red/10 text-cyber-red border-cyber-red/30',
-    HIGH:     'bg-cyber-amber/10 text-cyber-amber border-cyber-amber/30',
-    MEDIUM:   'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',
-    LOW:      'bg-cyber-green/10 text-cyber-green border-cyber-green/30',
+    CRITICAL: 'bg-red-50 text-red-800 border-red-200 dark:bg-cyber-red/10 dark:text-cyber-red dark:border-cyber-red/40',
+    HIGH:     'bg-amber-50 text-amber-800 border-amber-300 dark:bg-cyber-amber/10 dark:text-cyber-amber dark:border-cyber-amber/40',
+    MEDIUM:   'bg-orange-50 text-orange-800 border-orange-200 dark:bg-cyber-amber/10 dark:text-cyber-amber dark:border-cyber-amber/40',
+    LOW:      'bg-green-50 text-green-800 border-green-200 dark:bg-cyber-green/10 dark:text-cyber-green dark:border-cyber-green/40',
   }[level]
 }
 
 export function severityColor(sev: AlertSeverity): string {
   return {
-    SEV1: 'text-cyber-red',
-    SEV2: 'text-cyber-amber',
-    SEV3: 'text-yellow-400',
-    SEV4: 'text-cyber-cyan',
+    SEV1: 'text-red-700 dark:text-cyber-red',
+    SEV2: 'text-amber-700 dark:text-cyber-amber',
+    SEV3: 'text-orange-700 dark:text-cyber-amber',
+    SEV4: 'text-blue-700 dark:text-cyber-cyan',
   }[sev]
 }
 
 export function severityBg(sev: AlertSeverity): string {
   return {
-    SEV1: 'bg-cyber-red/10 text-cyber-red border-cyber-red/30',
-    SEV2: 'bg-cyber-amber/10 text-cyber-amber border-cyber-amber/30',
-    SEV3: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',
-    SEV4: 'bg-cyber-cyan/10 text-cyber-cyan border-cyber-cyan/30',
+    SEV1: 'bg-red-50 text-red-800 border-red-200 dark:bg-cyber-red/10 dark:text-cyber-red dark:border-cyber-red/40',
+    SEV2: 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-cyber-amber/10 dark:text-cyber-amber dark:border-cyber-amber/40',
+    SEV3: 'bg-orange-50 text-orange-800 border-orange-200 dark:bg-cyber-amber/10 dark:text-cyber-amber dark:border-cyber-amber/40',
+    SEV4: 'bg-blue-50 text-blue-800 border-blue-200 dark:bg-cyber-cyan/10 dark:text-cyber-cyan dark:border-cyber-cyan/40',
   }[sev]
 }

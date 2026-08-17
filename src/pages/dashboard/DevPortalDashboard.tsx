@@ -70,7 +70,7 @@ export default function DevPortalDashboard() {
           {auditLog && auditLog.items.length > 0 ? (
             <div className="space-y-1">
               {auditLog.items.map((e) => (
-                <div key={e.eventId} className="flex items-start gap-2 py-2 border-b border-surface-border/60 last:border-0">
+                <div key={e.eventId} className="flex items-start gap-2 py-2 border-b border-surface-border last:border-0">
                   <Badge color="cyan">{e.actorRole}</Badge>
                   <div className="min-w-0">
                     <p className="text-[11px] text-main truncate">{e.action.replace(/_/g, ' ')}</p>

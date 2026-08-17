@@ -97,13 +97,13 @@ export default function CredentialHygiene() {
               <thead>
                 <tr className="border-b border-surface-border">
                   {['Identity','Type','Risk','Environment','Owner Team','Vault Path'].map((h) => (
-                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">{h}</th>
+                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-slate-600 px-4 py-3 text-left whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {nhiList.map((n) => (
-                  <tr key={n.nhiId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
+                  <tr key={n.nhiId} className="border-b border-surface-border hover:bg-cyber-cyan/5 transition-colors">
                     <td className="px-4 py-3">
                       <Link to={`/inventory/${n.nhiId}`} className="text-bright hover:text-cyber-cyan transition-colors font-medium">
                         {n.displayName}

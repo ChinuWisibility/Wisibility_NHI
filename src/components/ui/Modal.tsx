@@ -27,7 +27,7 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
           enter="ease-out duration-200" enterFrom="opacity-0" enterTo="opacity-100"
           leave="ease-in duration-150" leaveFrom="opacity-100" leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-bg-dark/80 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" />
         </Transition.Child>
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
@@ -38,16 +38,16 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
             >
               <Dialog.Panel
                 className={cn(
-                  'w-full bg-surface border border-surface-border rounded-lg shadow-2xl',
+                  'w-full bg-surface border-[1.5px] border-slate-300 dark:border-surface-border rounded-[20px] shadow-[0_20px_60px_rgba(15,23,42,0.15)]',
                   sizes[size],
                 )}
               >
                 {title && (
                   <div className="flex items-center justify-between px-5 py-4 border-b border-surface-border">
-                    <Dialog.Title className="font-display text-sm font-semibold text-bright">
+                    <Dialog.Title className="text-base font-extrabold text-bright tracking-tight">
                       {title}
                     </Dialog.Title>
-                    <button onClick={onClose} className="text-muted hover:text-bright transition-colors">
+                    <button onClick={onClose} className="text-muted hover:text-bright transition-colors p-1 rounded-lg hover:bg-surface-2">
                       <XMarkIcon className="w-4 h-4" />
                     </button>
                   </div>

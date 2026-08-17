@@ -71,7 +71,7 @@ export default function AlertsCenter() {
               <thead>
                 <tr className="bg-surface-2 border-b border-surface-border">
                   {['Severity', 'Type', 'Description', 'Detected', 'NHI', ''].map((h) => (
-                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">
+                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-slate-600 px-4 py-3 text-left whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -82,7 +82,7 @@ export default function AlertsCenter() {
                   <tr
                     key={alert.alertId}
                     className={cn(
-                      'border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors',
+                      'border-b border-surface-border hover:bg-cyber-cyan/5 transition-colors',
                       alert.severity === 'SEV1' && 'bg-cyber-red/5',
                     )}
                   >

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
@@ -12,7 +12,19 @@ import { useNHIStore } from '@/stores/nhiStore'
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch'
 import { formatRelativeTime, riskLevelBg } from '@/utils/formatters'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import type { NHI } from '@/types/nhi.types'
+import type { NHI, NHIType } from '@/types/nhi.types'
+import { cn } from '@/utils/cn'
+
+const TYPE_TABS: { label: string; value: NHIType | '' }[] = [
+  { label: 'All NHIs', value: '' },
+  { label: 'Service Accounts', value: 'SERVICE_ACCOUNT' },
+  { label: 'Machine Identities', value: 'IAM_ROLE' },
+  { label: 'API Keys', value: 'API_KEY' },
+  { label: 'Tokens', value: 'LONG_LIVED_TOKEN' },
+  { label: 'Certificates', value: 'CERTIFICATE' },
+  { label: 'Secrets', value: 'WEBHOOK_SECRET' },
+  { label: 'Workloads', value: 'SPIFFE_SVID' },
+]
 
 export default function InventoryList() {
   const [search, setSearch]  = useState('')
@@ -20,28 +32,57 @@ export default function InventoryList() {
   const setFilters           = useNHIStore((s) => s.setFilters)
   const { data, isLoading, isError } = useNHIList()
   const navigate             = useNavigate()
+  const [params, setParams]  = useSearchParams()
+  const typeFilter           = (params.get('type') ?? '') as NHIType | ''
 
-  const handleSearch = (val: string) => {
-    setSearch(val)
-    setFilters({ q: debounced })
+  useEffect(() => {
+    setFilters({
+      q: debounced || undefined,
+      nhiType: typeFilter || undefined,
+    })
+  }, [debounced, typeFilter, setFilters])
+
+  const setType = (value: NHIType | '') => {
+    const next = new URLSearchParams(params)
+    if (value) next.set('type', value)
+    else next.delete('type')
+    setParams(next, { replace: true })
   }
+
+  const activeLabel = TYPE_TABS.find((t) => t.value === typeFilter)?.label ?? 'All NHIs'
 
   return (
     <div className="animate-fade-up">
       <PageHeader
-        title="NHI Inventory"
-        subtitle="Complete catalogue of all non-human identities across all connected systems."
-        breadcrumbs={[{ label: 'Inventory' }]}
+        title={activeLabel === 'All NHIs' ? 'NHI Inventory' : activeLabel}
+        subtitle="Unified catalogue of machine users, credentials, workloads and agents across connected systems."
+        breadcrumbs={[{ label: 'Inventory' }, { label: activeLabel }]}
         actions={<Button variant="primary" size="sm">Export</Button>}
       />
 
-      {/* Search + filters */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {TYPE_TABS.map((tab) => (
+          <button
+            key={tab.label}
+            onClick={() => setType(tab.value)}
+            className={cn(
+              'px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors',
+              typeFilter === tab.value
+                ? 'bg-blue-50 border-blue-300 text-blue-800'
+                : 'bg-white border-slate-300 text-slate-600 hover:border-blue-300',
+            )}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="flex gap-3 mb-4">
         <div className="flex-1">
           <Input
             placeholder="Search by name, ID, owner…"
             value={search}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
@@ -72,7 +113,7 @@ export default function InventoryList() {
               <thead>
                 <tr className="bg-surface-2 border-b border-surface-border">
                   {['Display Name', 'Type', 'Risk', 'Environment', 'Owner', 'Connector', 'Last Seen'].map((h) => (
-                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">
+                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-slate-600 px-4 py-3 text-left whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -82,7 +123,7 @@ export default function InventoryList() {
                 {data.items.map((nhi: NHI) => (
                   <tr
                     key={nhi.nhiId}
-                    className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 cursor-pointer transition-colors"
+                    className="border-b border-surface-border hover:bg-cyber-cyan/5 cursor-pointer transition-colors"
                     onClick={() => navigate(`/inventory/${nhi.nhiId}`)}
                   >
                     <td className="px-4 py-3 text-bright font-medium">{nhi.displayName}</td>

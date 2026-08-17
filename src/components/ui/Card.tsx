@@ -12,11 +12,11 @@ interface CardProps {
 }
 
 const accents: Record<AccentColor, string> = {
-  cyan:   'border-t-cyber-cyan',
-  green:  'border-t-cyber-green',
-  amber:  'border-t-cyber-amber',
-  red:    'border-t-cyber-red',
-  purple: 'border-t-cyber-purple',
+  cyan:   'before:bg-cyber-cyan',
+  green:  'before:bg-cyber-green',
+  amber:  'before:bg-cyber-amber',
+  red:    'before:bg-cyber-red',
+  purple: 'before:bg-cyber-purple',
   none:   '',
 }
 
@@ -25,10 +25,10 @@ export function Card({ children, accent = 'none', className, padding = true, onC
     <div
       onClick={onClick}
       className={cn(
-        'bg-surface rounded border border-surface-border',
-        accent !== 'none' && `border-t-2 ${accents[accent]}`,
+        'relative bg-surface rounded-xl border border-surface-border shadow-card overflow-hidden',
+        accent !== 'none' && `before:absolute before:inset-x-0 before:top-0 before:h-[3px] ${accents[accent]}`,
         padding && 'p-4',
-        onClick && 'cursor-pointer hover:border-cyber-cyan/50 transition-colors',
+        onClick && 'cursor-pointer hover:border-brand/50 hover:shadow-card-hover transition-all duration-200',
         className,
       )}
     >
@@ -39,7 +39,7 @@ export function Card({ children, accent = 'none', className, padding = true, onC
 
 export function CardHeader({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn('font-mono text-[9px] tracking-[1.5px] uppercase text-muted mb-3', className)}>
+    <div className={cn('text-xs font-bold tracking-[0.09em] uppercase text-slate-600 dark:text-muted mb-3', className)}>
       {children}
     </div>
   )

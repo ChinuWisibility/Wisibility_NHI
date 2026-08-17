@@ -44,7 +44,7 @@ export default function IssueList() {
               <thead>
                 <tr className="bg-surface-2 border-b border-surface-border">
                   {['NHI', 'Issue Type', 'Severity', 'Detected', 'Status', ''].map((h) => (
-                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">
+                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-slate-600 px-4 py-3 text-left whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -52,7 +52,7 @@ export default function IssueList() {
               </thead>
               <tbody>
                 {data.items.map((issue) => (
-                  <tr key={issue.issueId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
+                  <tr key={issue.issueId} className="border-b border-surface-border hover:bg-cyber-cyan/5 transition-colors">
                     <td className="px-4 py-3 font-mono text-[10px] text-muted">{issue.nhiId.slice(0, 12)}…</td>
                     <td className="px-4 py-3 text-main">{issue.issueType.replace(/_/g, ' ')}</td>
                     <td className="px-4 py-3">

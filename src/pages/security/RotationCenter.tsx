@@ -71,13 +71,13 @@ export default function RotationCenter() {
             <thead>
               <tr className="bg-surface-2 border-b border-surface-border">
                 {['Identity','Type','Environment','Owner','Schedule','Last Rotated','Next Rotation','Status'].map((h) => (
-                  <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">{h}</th>
+                  <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-slate-600 px-4 py-3 text-left whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {visible.map((job) => (
-                <tr key={job.nhiId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
+                <tr key={job.nhiId} className="border-b border-surface-border hover:bg-cyber-cyan/5 transition-colors">
                   <td className="px-4 py-3">
                     <Link to={`/inventory/${job.nhiId}`} className="text-bright hover:text-cyber-cyan transition-colors font-medium truncate max-w-[160px] block">
                       {job.nhiName}

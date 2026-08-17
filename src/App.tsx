@@ -41,10 +41,10 @@ export default function App() {
 
   useEffect(() => {
     const root = window.document.documentElement
-    if (theme === 'light') {
-      root.classList.add('light')
+    if (theme === 'dark') {
+      root.classList.add('dark')
     } else {
-      root.classList.remove('light')
+      root.classList.remove('dark')
     }
   }, [theme])
 
@@ -92,14 +92,17 @@ export default function App() {
         />
       </Routes>
       <Toaster
-        position="bottom-right"
+        position="top-right"
         toastOptions={{
           style: {
-            background: 'var(--color-surface-2)',
+            background: 'var(--color-surface)',
             color:      'var(--color-text-main)',
             border:     '1px solid var(--color-surface-border)',
-            fontFamily: 'IBM Plex Mono, monospace',
-            fontSize:   '12px',
+            boxShadow:  '0 8px 24px rgba(15,23,42,0.12)',
+            fontFamily: '"Plus Jakarta Sans", Inter, sans-serif',
+            fontSize:   '13px',
+            fontWeight: 600,
+            borderRadius: '12px',
           },
         }}
       />

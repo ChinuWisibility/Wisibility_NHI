@@ -224,7 +224,7 @@ function PolicyModal({
                 if (errors.description) setErrors(prev => ({ ...prev, description: '' }))
               }}
               className={cn(
-                "w-full bg-surface-2 border rounded px-3 py-2 text-sm text-main placeholder:text-muted/50 focus:outline-none focus:border-cyber-cyan/60 resize-none transition-colors",
+                "w-full bg-surface-2 border rounded px-3 py-2 text-sm text-main placeholder:text-slate-500 focus:outline-none focus:border-cyber-cyan/60 resize-none transition-colors",
                 errors.description ? "border-cyber-red" : "border-surface-border"
               )}
             />
@@ -263,7 +263,7 @@ function PolicyModal({
               </p>
             </div>
             
-            <div className="space-y-6 bg-surface-2/40 p-4 rounded-lg border border-surface-border/50">
+            <div className="space-y-6 bg-slate-50 p-4 rounded-lg border border-surface-border">
               <ChipSelect
                 label="Identity Types"
                 options={NHI_TYPES}
@@ -292,7 +292,7 @@ function PolicyModal({
                     placeholder="Payments, Security, DevOps..."
                     value={ownerInput}
                     onChange={(e) => setOwnerInput(e.target.value)}
-                    className="w-full bg-surface-2 border border-surface-border rounded px-3 py-2 text-sm text-main placeholder:text-muted/50 focus:outline-none focus:border-cyber-cyan/60 pr-10"
+                    className="w-full bg-surface-2 border border-surface-border rounded px-3 py-2 text-sm text-main placeholder:text-slate-500 focus:outline-none focus:border-cyber-cyan/60 pr-10"
                   />
                   <UsersIcon className="absolute right-3 top-2.5 w-4 h-4 text-muted/40" />
                 </div>
@@ -436,14 +436,14 @@ export default function Policies() {
                   <div className="mt-3 ml-5 flex flex-wrap items-center gap-x-4 gap-y-2">
                     {/* Action */}
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-[9px] tracking-widest uppercase text-muted">Action</span>
+                      <span className="text-[11px] font-bold tracking-wide uppercase text-slate-600">Action</span>
                       <Badge color={meta?.color ?? 'cyan'}>{meta?.label ?? p.action}</Badge>
                     </div>
 
                     {/* Type */}
                     {!!p.filters.nhiType?.length && (
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-mono text-[9px] tracking-widest uppercase text-muted">Type</span>
+                        <span className="text-[11px] font-bold tracking-wide uppercase text-slate-600">Type</span>
                         {p.filters.nhiType.map((t) => (
                           <Badge key={t} color="cyan">{t.replace(/_/g, ' ')}</Badge>
                         ))}
@@ -453,7 +453,7 @@ export default function Policies() {
                     {/* Risk */}
                     {!!p.filters.riskLevel?.length && (
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-mono text-[9px] tracking-widest uppercase text-muted">Risk</span>
+                        <span className="text-[11px] font-bold tracking-wide uppercase text-slate-600">Risk</span>
                         {p.filters.riskLevel.map((r) => (
                           <Badge key={r} color={RISK_COLORS[r]}>{r}</Badge>
                         ))}
@@ -463,7 +463,7 @@ export default function Policies() {
                     {/* Environment */}
                     {!!p.filters.environment?.length && (
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-mono text-[9px] tracking-widest uppercase text-muted">Env</span>
+                        <span className="text-[11px] font-bold tracking-wide uppercase text-slate-600">Env</span>
                         {p.filters.environment.map((e) => (
                           <Badge key={e} color="purple">{e}</Badge>
                         ))}
@@ -473,7 +473,7 @@ export default function Policies() {
                     {/* Owner */}
                     {!!p.filters.ownerTeam?.length && (
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono text-[9px] tracking-widest uppercase text-muted">Owner</span>
+                        <span className="text-[11px] font-bold tracking-wide uppercase text-slate-600">Owner</span>
                         <span className="text-[11px] text-main">{p.filters.ownerTeam.join(', ')}</span>
                       </div>
                     )}

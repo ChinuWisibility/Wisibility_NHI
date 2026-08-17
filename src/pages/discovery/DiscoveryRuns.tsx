@@ -33,7 +33,7 @@ export default function DiscoveryRuns() {
               <thead>
                 <tr className="bg-surface-2 border-b border-surface-border">
                   {['Run ID', 'Connector', 'Status', 'Started', 'New', 'Updated', 'Removed', 'Errors'].map((h) => (
-                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">
+                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-slate-600 px-4 py-3 text-left whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -41,7 +41,7 @@ export default function DiscoveryRuns() {
               </thead>
               <tbody>
                 {runs.map((run) => (
-                  <tr key={run.runId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
+                  <tr key={run.runId} className="border-b border-surface-border hover:bg-cyber-cyan/5 transition-colors">
                     <td className="px-4 py-3 font-mono text-[10px] text-muted">{run.runId.slice(0, 8)}…</td>
                     <td className="px-4 py-3 text-main">{run.connectorType}</td>
                     <td className="px-4 py-3">

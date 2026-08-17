@@ -48,8 +48,8 @@ export default function PostureDashboard() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        title="Posture Management"
-        subtitle="NHI lifecycle management, hygiene metrics, and classification insights."
+        title="NHI Risk & Posture"
+        subtitle="Whether NHIs are owned, certified, least-privileged and compliant — not just discovered."
         breadcrumbs={[{ label: 'Posture' }, { label: 'Dashboard' }]}
         actions={
           <Button variant="primary" size="sm" onClick={() => navigate('/posture/issues')}>
@@ -330,7 +330,7 @@ export default function PostureDashboard() {
 
 function HygieneMetric({ label, value, icon, description }: { label: string, value: number, icon: React.ReactNode, description: string }) {
   return (
-    <Card className="p-4 hover:border-surface-border/80 transition-colors">
+    <Card className="p-4 hover:border-surface-border transition-colors">
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-surface-light rounded-lg border border-surface-border">

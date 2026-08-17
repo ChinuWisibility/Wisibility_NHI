@@ -68,13 +68,13 @@ export default function UserManagement() {
             <thead>
               <tr className="bg-surface-2 border-b border-surface-border">
                 {['Name','Email','Role','MFA','Member Since',''].map((h) => (
-                  <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">{h}</th>
+                  <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-slate-600 px-4 py-3 text-left whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.userId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
+                <tr key={u.userId} className="border-b border-surface-border hover:bg-cyber-cyan/5 transition-colors">
                   <td className="px-4 py-3">
                     <p className="text-bright font-medium">{u.name}</p>
                     <p className="font-mono text-[10px] text-muted">{u.userId}</p>

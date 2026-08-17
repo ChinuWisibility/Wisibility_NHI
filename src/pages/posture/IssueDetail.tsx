@@ -80,7 +80,7 @@ export default function IssueDetail() {
             {detailEntries.length > 0 ? (
               <div className="space-y-2">
                 {detailEntries.map(([k, v]) => (
-                  <div key={k} className="flex items-start gap-3 py-2 border-b border-surface-border/60 last:border-0 text-xs">
+                  <div key={k} className="flex items-start gap-3 py-2 border-b border-surface-border last:border-0 text-xs">
                     <span className="font-mono text-muted w-40 flex-shrink-0">{k}</span>
                     <span className="text-main break-all font-mono">
                       {Array.isArray(v) ? v.join(', ') : String(v)}

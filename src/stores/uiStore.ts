@@ -21,7 +21,7 @@ export const useUIStore = create<UIState>()((set) => ({
   sidebarOpen:  true,
   activeModal:  null,
   breadcrumbs:  [],
-  theme:        (localStorage.getItem('theme') as 'dark' | 'light') || 'dark',
+  theme:        (localStorage.getItem('theme') as 'dark' | 'light') || 'light',
 
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   openModal:     (id) => set({ activeModal: id }),

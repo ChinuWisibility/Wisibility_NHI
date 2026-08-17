@@ -1,99 +1,175 @@
-import { useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { useNHIDetail } from '@/hooks/useNHI'
 import { formatDate, formatCredentialAge, riskLevelBg } from '@/utils/formatters'
+import { cn } from '@/utils/cn'
+
+const TABS = [
+  'Overview', 'Ownership', 'Lineage', 'Access', 'Usage',
+  'Credentials', 'Risk', 'Lifecycle', 'Certifications', 'Remediation', 'Audit',
+] as const
+
+type Tab = typeof TABS[number]
 
 export default function NHIDetail() {
   const { id }              = useParams<{ id: string }>()
   const { data, isLoading } = useNHIDetail(id ?? '')
+  const [tab, setTab]       = useState<Tab>('Overview')
 
   if (isLoading) return <div className="flex items-center justify-center py-20"><Spinner size="lg" /></div>
   if (!data) return <p className="text-xs text-muted p-6">NHI not found.</p>
+
+  const orphan = !data.ownerTeam
 
   return (
     <div className="animate-fade-up max-w-5xl">
       <PageHeader
         title={data.displayName}
-        subtitle={`${data.nhiType.replace(/_/g, ' ')} · ${data.environment}`}
+        subtitle={`${data.nhiType.replace(/_/g, ' ')} · ${data.environment} · ${data.status}`}
         breadcrumbs={[{ label: 'Inventory', href: '/inventory' }, { label: data.displayName }]}
+        actions={
+          <Link to="/intelligence/blast-radius">
+            <Button variant="secondary" size="sm">Blast radius</Button>
+          </Link>
+        }
       />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-        {/* Risk score */}
-        <Card accent="cyan" className="lg:col-span-1">
-          <CardHeader>Risk Score</CardHeader>
-          <p className={`font-display text-4xl font-bold mb-2 ${riskLevelBg(data.riskLevel).split(' ')[0]}`}>
-            {data.riskScore}
-          </p>
-          <span className={`font-mono text-[10px] px-2 py-0.5 rounded border ${riskLevelBg(data.riskLevel)}`}>
-            {data.riskLevel}
-          </span>
-        </Card>
-        {/* Meta */}
-        <Card accent="none" className="lg:col-span-2">
-          <CardHeader>Identity Details</CardHeader>
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs">
+
+      <div className="flex gap-1 overflow-x-auto mb-5 border-b border-slate-200 pb-px">
+        {TABS.map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={cn(
+              'px-3 py-2 text-xs font-bold whitespace-nowrap border-b-2 transition-colors',
+              tab === t ? 'border-brand text-brand' : 'border-transparent text-slate-500 hover:text-slate-800',
+            )}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'Overview' && (
+        <>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+            <Card accent="cyan" className="lg:col-span-1">
+              <CardHeader>NHI Security Posture</CardHeader>
+              <p className={`text-4xl font-extrabold mb-2 ${riskLevelBg(data.riskLevel).split(' ')[0]}`}>
+                {data.riskScore}
+              </p>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${riskLevelBg(data.riskLevel)}`}>
+                {data.riskLevel}
+              </span>
+              <p className="text-xs text-slate-600 mt-3">Explainable score from privilege, age, exposure, usage and ownership.</p>
+            </Card>
+            <Card className="lg:col-span-2">
+              <CardHeader>Identity Details</CardHeader>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs">
+                {[
+                  { label: 'NHI ID', value: data.nhiId },
+                  { label: 'Type', value: data.nhiType },
+                  { label: 'Status', value: data.status },
+                  { label: 'Environment', value: data.environment },
+                  { label: 'Privilege', value: data.privilegeLevel },
+                  { label: 'Owner Team', value: data.ownerTeam ?? 'Orphaned' },
+                  { label: 'Shared', value: data.isShared ? 'Yes' : 'No' },
+                  { label: 'Hardcoded', value: data.isHardcoded ? 'Yes' : 'No' },
+                  { label: 'Created', value: formatDate(data.createdAt) },
+                  { label: 'Credential age', value: formatCredentialAge(data.createdAt) },
+                  { label: 'Vault', value: data.vaultPath ?? 'Not in vault' },
+                ].map(({ label, value }) => (
+                  <div key={label}>
+                    <dt className="text-[11px] font-bold uppercase tracking-wide text-slate-500">{label}</dt>
+                    <dd className="text-sm font-medium text-slate-900 mt-0.5 truncate">{String(value)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Card>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>Connector</CardHeader>
+              <p className="text-sm font-bold text-slate-900">{data.sourceConnector}</p>
+              <p className="text-xs text-slate-600 mt-1">Last discovered {formatDate(data.lastDiscovered)}</p>
+              <div className="mt-3"><Badge color="green">SUCCESS</Badge></div>
+            </Card>
+            {Object.keys(data.tags).length > 0 && (
+              <Card>
+                <CardHeader>Metadata</CardHeader>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(data.tags).map(([k, v]) => (
+                    <Badge key={k} color="dim">{k}: {v}</Badge>
+                  ))}
+                </div>
+              </Card>
+            )}
+          </div>
+        </>
+      )}
+
+      {tab === 'Ownership' && (
+        <Card>
+          <CardHeader>Workforce attribution</CardHeader>
+          {orphan && <div className="mb-3"><Badge color="red">Orphaned NHI</Badge></div>}
+          <dl className="grid grid-cols-2 gap-4 text-sm">
             {[
-              { label: 'NHI ID',      value: data.nhiId },
-              { label: 'Type',        value: data.nhiType },
-              { label: 'Status',      value: data.status },
-              { label: 'Environment', value: data.environment },
-              { label: 'Privilege',   value: data.privilegeLevel },
-              { label: 'Owner Team',  value: data.ownerTeam ?? '—' },
-              { label: 'Is Shared',   value: data.isShared ? 'Yes' : 'No' },
-              { label: 'Is Hardcoded', value: data.isHardcoded ? 'Yes' : 'No' },
-              { label: 'Created',     value: formatDate(data.createdAt) },
-              { label: 'Age',         value: formatCredentialAge(data.createdAt) },
-              { label: 'Vault Path',  value: data.vaultPath ?? '—' },
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <dt className="font-mono text-[9px] uppercase tracking-wider text-muted">{label}</dt>
-                <dd className="text-main mt-0.5 truncate">{String(value)}</dd>
+              ['Technical owner', data.ownerTeam ?? 'Unassigned'],
+              ['Business owner', '—'],
+              ['Creator', '—'],
+              ['Approver', '—'],
+              ['Application owner', '—'],
+              ['Last reviewer', '—'],
+            ].map(([k, v]) => (
+              <div key={k}>
+                <dt className="text-[11px] font-bold uppercase text-slate-500">{k}</dt>
+                <dd className="font-semibold text-slate-900 mt-0.5">{v}</dd>
               </div>
             ))}
           </dl>
         </Card>
-      </div>
+      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        {/* Connector Details */}
-        <Card accent="cyan">
-          <CardHeader>Connector Information</CardHeader>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-surface-2 border border-surface-border rounded flex items-center justify-center font-bold text-cyber-cyan">
-              {data.sourceConnector.slice(0, 2).toUpperCase()}
-            </div>
-            <div>
-              <p className="text-xs font-bold text-bright">{data.sourceConnector}</p>
-              <p className="font-mono text-[9px] text-muted mt-1 uppercase tracking-wider">Source System</p>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-surface-border grid grid-cols-2 gap-4">
-            <div>
-              <p className="font-mono text-[8px] text-muted uppercase mb-1">Last Discovered</p>
-              <p className="text-[11px] text-main">{formatDate(data.lastDiscovered)}</p>
-            </div>
-            <div>
-              <p className="font-mono text-[8px] text-muted uppercase mb-1">Discovery Status</p>
-              <Badge color="green">SUCCESS</Badge>
-            </div>
+      {tab === 'Risk' && (
+        <Card>
+          <CardHeader>Risk contributors</CardHeader>
+          <ul className="space-y-2 text-sm text-slate-700">
+            {orphan && <li>No owner — production identities without attribution raise risk automatically.</li>}
+            {data.isHardcoded && <li>Credential appears hardcoded / not vaulted.</li>}
+            {data.isShared && <li>Shared across consumers — blast radius is wider.</li>}
+            {(data.privilegeLevel === 'ADMIN' || data.privilegeLevel === 'ELEVATED') && (
+              <li>Elevated privilege on {data.environment}.</li>
+            )}
+            <li>Credential age {formatCredentialAge(data.createdAt)}.</li>
+          </ul>
+        </Card>
+      )}
+
+      {tab === 'Lifecycle' && (
+        <Card>
+          <CardHeader>Lifecycle state</CardHeader>
+          <p className="text-sm font-semibold text-slate-800 mb-4">Current: {data.status}</p>
+          <div className="flex flex-wrap gap-2">
+            {['Requested', 'Created', 'Active', 'Review', 'Rotation', 'Suspended', 'Decommissioned', 'Archived'].map((s) => (
+              <span key={s} className="px-2.5 py-1 rounded-lg border border-slate-300 text-xs font-bold text-slate-600 bg-slate-50">{s}</span>
+            ))}
           </div>
         </Card>
+      )}
 
-        {/* Tags */}
-        {Object.keys(data.tags).length > 0 && (
-          <Card>
-            <CardHeader>Metadata Tags</CardHeader>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(data.tags).map(([k, v]) => (
-                <Badge key={k} color="dim">{k}: {v}</Badge>
-              ))}
-            </div>
-          </Card>
-        )}
-      </div>
+      {!['Overview', 'Ownership', 'Risk', 'Lifecycle'].includes(tab) && (
+        <Card>
+          <CardHeader>{tab}</CardHeader>
+          <p className="text-sm text-slate-600 mb-4">
+            This identity-profile tab is part of the Compass model (lineage, usage vs granted access, certifications, remediation and audit).
+          </p>
+          <Link to="/dashboard"><Button variant="secondary" size="sm">Back to Command Center</Button></Link>
+        </Card>
+      )}
     </div>
   )
 }

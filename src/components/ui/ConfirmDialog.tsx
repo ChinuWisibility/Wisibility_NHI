@@ -22,23 +22,23 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="bg-surface border border-surface-border rounded-lg p-6 max-w-md shadow-2xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
-        <AlertDialogTitle className="font-display text-sm font-semibold text-bright mb-2">
+      <AlertDialogContent className="bg-surface border-[1.5px] border-slate-300 dark:border-surface-border rounded-[20px] p-6 max-w-md shadow-[0_20px_60px_rgba(15,23,42,0.15)] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+        <AlertDialogTitle className="text-base font-extrabold text-bright mb-2 tracking-tight">
           {title}
         </AlertDialogTitle>
-        <AlertDialogDescription className="text-xs text-muted mb-5">
+        <AlertDialogDescription className="text-sm text-muted mb-5 font-medium">
           {description}
         </AlertDialogDescription>
         <div className="flex gap-3 justify-end">
-          <AlertDialogCancel className="font-mono text-[10px] px-4 py-2 rounded border border-surface-border text-muted hover:text-bright bg-surface-2 transition-colors">
+          <AlertDialogCancel className="text-sm font-bold px-4 py-2 rounded-lg border border-surface-border text-muted hover:text-bright bg-surface-2 transition-colors">
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className={`font-mono text-[10px] px-4 py-2 rounded border transition-colors ${
+            className={`text-sm font-bold px-4 py-2 rounded-lg border transition-all ${
               danger
-                ? 'border-cyber-red/40 bg-cyber-red/10 text-cyber-red hover:bg-cyber-red/20'
-                : 'border-cyber-cyan/40 bg-cyber-cyan/10 text-cyber-cyan hover:bg-cyber-cyan/20'
+                ? 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100'
+                : 'border-transparent text-white bg-gradient-to-br from-[#3b82f6] to-[#2563EB] shadow-[0_4px_0_rgba(30,58,138,0.28)]'
             }`}
           >
             {confirmLabel}

@@ -47,7 +47,7 @@ export default function AuditLog() {
               <thead>
                 <tr className="bg-surface-2 border-b border-surface-border">
                   {['Timestamp', 'Actor', 'Role', 'Action', 'Resource Type', 'Resource ID'].map((h) => (
-                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-cyber-cyan px-4 py-3 text-left whitespace-nowrap">
+                    <th key={h} className="font-mono text-[10px] tracking-widest uppercase text-slate-600 px-4 py-3 text-left whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -55,7 +55,7 @@ export default function AuditLog() {
               </thead>
               <tbody>
                 {data.items.map((log) => (
-                  <tr key={log.eventId} className="border-b border-surface-border/70 hover:bg-cyber-cyan/5 transition-colors">
+                  <tr key={log.eventId} className="border-b border-surface-border hover:bg-cyber-cyan/5 transition-colors">
                     <td className="px-4 py-3 font-mono text-[10px] text-muted">{formatDateTime(log.timestamp)}</td>
                     <td className="px-4 py-3 font-mono text-[10px] text-cyber-cyan">{log.actorId.slice(0, 10)}…</td>
                     <td className="px-4 py-3"><Badge color="dim">{log.actorRole}</Badge></td>

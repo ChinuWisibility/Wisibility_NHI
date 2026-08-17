@@ -4,10 +4,8 @@ import { useIsAuthenticated } from '@azure/msal-react'
 import { useAuthStore } from '@/stores/authStore'
 import { ROLE_HOME } from '@/config/routes'
 import { Spinner } from '@/components/ui/Spinner'
+import { FingerPrintIcon } from '@heroicons/react/24/outline'
 
-// With Azure Entra ID + MSAL, MFA and Conditional Access are handled entirely on
-// Microsoft's login portal during the redirect flow — there is no in-app MFA step.
-// This page exists for deep-link compatibility and shows a redirect indicator.
 export default function MFA() {
   const navigate        = useNavigate()
   const msalAuth        = useIsAuthenticated()
@@ -22,12 +20,16 @@ export default function MFA() {
   }, [msalAuth, userRole, navigate])
 
   return (
-    <div className="min-h-screen bg-bg-dark flex flex-col items-center justify-center gap-4">
-      <h1 className="font-display text-2xl font-bold text-bright">
-        NHI<span className="text-cyber-cyan">ALPS</span>
-      </h1>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: 'linear-gradient(160deg, #f8fafc 0%, #eef2ff 45%, #e0e7ff 100%)' }}>
+      <span
+        className="w-14 h-14 rounded-[18px] flex items-center justify-center"
+        style={{ background: 'linear-gradient(145deg, #3b82f6, #2563EB)', boxShadow: '0 8px 0 rgba(30,58,138,0.3), 0 12px 24px rgba(37,99,235,0.25)' }}
+      >
+        <FingerPrintIcon className="w-7 h-7 text-white" />
+      </span>
+      <h1 className="text-xl font-extrabold text-slate-900">NHI Compass</h1>
       <Spinner size="lg" />
-      <p className="font-mono text-[10px] tracking-[2px] uppercase text-muted">
+      <p className="text-xs font-semibold tracking-wide uppercase text-slate-400">
         Completing authentication…
       </p>
     </div>
