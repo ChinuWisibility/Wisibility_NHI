@@ -14,8 +14,11 @@ import {
   InformationCircleIcon 
 } from '@heroicons/react/24/outline'
 import { discoveryService } from '@/services/discovery.service'
+import { AddAzureConnectorModal } from '@/components/discovery/AddAzureConnectorModal'
+import { AddAwsConnectorModal } from '@/components/discovery/AddAwsConnectorModal'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function ConnectorHub() {
   const { data: connectors, isLoading } = useConnectors()
@@ -24,8 +27,11 @@ export default function ConnectorHub() {
   const [triggering, setTriggering] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [testingId, setTestingId] = useState<string | null>(null)
+  const [addAzureOpen, setAddAzureOpen] = useState(false)
+  const [addAwsOpen, setAddAwsOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const handleTriggerAll = async () => {
     setTriggering(true)
@@ -97,7 +103,8 @@ export default function ConnectorHub() {
               <ArrowUpTrayIcon className="w-4 h-4 mr-1" />
               Upload Identities
             </Button>
-            <Button variant="secondary" size="sm">+ Add Connector</Button>
+            <Button variant="secondary" size="sm" onClick={() => setAddAzureOpen(true)}>+ Add Azure</Button>
+            <Button variant="secondary" size="sm" onClick={() => setAddAwsOpen(true)}>+ Add AWS</Button>
             <Button variant="primary" size="sm" loading={triggering} onClick={handleTriggerAll}>
               ▶ Trigger All
             </Button>
@@ -110,7 +117,7 @@ export default function ConnectorHub() {
           icon={<ServerIcon className="w-10 h-10" />}
           title="No connectors configured"
           message="Add your first connector to start discovering NHIs."
-          action={<Button variant="primary" size="sm">Add Connector</Button>}
+          action={<Button variant="primary" size="sm" onClick={() => setAddAzureOpen(true)}>Add Azure Connector</Button>}
         />
       )}
       {connectors && connectors.length > 0 && (
@@ -190,6 +197,22 @@ export default function ConnectorHub() {
           ))}
         </div>
       )}
+      <AddAzureConnectorModal
+        open={addAzureOpen}
+        onClose={() => setAddAzureOpen(false)}
+        onCreated={(id) => {
+          void queryClient.invalidateQueries({ queryKey: ['connectors'] })
+          navigate(`/discovery/connectors/${id}?tab=config`)
+        }}
+      />
+      <AddAwsConnectorModal
+        open={addAwsOpen}
+        onClose={() => setAddAwsOpen(false)}
+        onCreated={(id) => {
+          void queryClient.invalidateQueries({ queryKey: ['connectors'] })
+          navigate(`/discovery/connectors/${id}?tab=config`)
+        }}
+      />
     </div>
   )
 }

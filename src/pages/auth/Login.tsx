@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -72,11 +72,15 @@ export default function Login() {
     defaultValues: { role: 'L2' },
   })
 
-  if (isAuth && userRole) {
-    const from = location.state?.from || ROLE_HOME[userRole]
-    navigate(from, { replace: true })
-    return null
-  }
+  useEffect(() => {
+    if (!isAuth || !userRole) return
+    const from = location.state?.from
+    const target = (from && from !== '/login' && from !== '/mfa') ? from : ROLE_HOME[userRole]
+    if (location.pathname === target) return
+    navigate(target, { replace: true })
+  }, [isAuth, userRole, location.pathname, location.state, navigate])
+
+  if (isAuth && userRole) return null
 
   const onLogin = async (data: LoginData) => {
     setLoading(true)

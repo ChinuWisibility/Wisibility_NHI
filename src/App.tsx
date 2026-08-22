@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useState, type ReactNode } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import { Spinner } from '@/components/ui/Spinner'
@@ -35,6 +35,19 @@ const LoadingFallback = () => (
   </div>
 )
 
+function AuthHydrationGate({ children }: { children: ReactNode }) {
+  const [ready, setReady] = useState(() => useAuthStore.persist.hasHydrated())
+
+  useEffect(() => {
+    const unsub = useAuthStore.persist.onFinishHydration(() => setReady(true))
+    if (useAuthStore.persist.hasHydrated()) setReady(true)
+    return unsub
+  }, [])
+
+  if (!ready) return <LoadingFallback />
+  return children
+}
+
 export default function App() {
   const userRole = useAuthStore((s) => s.userRole)
   const theme = useUIStore((s) => s.theme)
@@ -49,7 +62,7 @@ export default function App() {
   }, [theme])
 
   return (
-    <>
+    <AuthHydrationGate>
       <Routes>
         {/* Public Routes */}
         {routes.filter(r => r.isPublic).map((route) => (
@@ -85,10 +98,10 @@ export default function App() {
           element={<Navigate to={userRole ? ROLE_HOME[userRole] : '/login'} replace />}
         />
 
-        {/* Catch-all Redirect */}
+        {/* Unknown paths stay put instead of bouncing back to /dashboard */}
         <Route
           path="*"
-          element={<Navigate to={userRole ? ROLE_HOME[userRole] : '/login'} replace />}
+          element={<Navigate to={userRole ? '/403' : '/login'} replace />}
         />
       </Routes>
       <Toaster
@@ -106,6 +119,6 @@ export default function App() {
           },
         }}
       />
-    </>
+    </AuthHydrationGate>
   )
 }

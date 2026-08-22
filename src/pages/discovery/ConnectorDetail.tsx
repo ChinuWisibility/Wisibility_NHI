@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Card, CardHeader } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Spinner } from '@/components/ui/Spinner'
+import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
 import { discoveryService } from '@/services/discovery.service'
 import { nhiService } from '@/services/nhi.service'
 import { useTestConnector, useTriggerDiscovery } from '@/hooks/useDiscovery'
@@ -45,8 +47,25 @@ export default function ConnectorDetail() {
 
   const [testing, setTesting] = useState(false)
   const [triggering, setTriggering] = useState(false)
+  const [savingConfig, setSavingConfig] = useState(false)
+  const [azureForm, setAzureForm] = useState({
+    displayName: '',
+    tenantId: '',
+    clientId: '',
+    clientSecret: '',
+    subscriptionId: '',
+  })
+  const [awsForm, setAwsForm] = useState({
+    displayName: '',
+    accessKeyId: '',
+    secretAccessKey: '',
+    region: 'us-east-1',
+    roleArn: '',
+    externalId: '',
+  })
   const testConnector = useTestConnector()
   const triggerDiscovery = useTriggerDiscovery()
+  const queryClient = useQueryClient()
 
   const handleTest = async () => {
     if (!id) return
@@ -65,16 +84,52 @@ export default function ConnectorDetail() {
     }
   }
 
-  const handleForceRescan = async () => {
-    if (!id || !connector) return
-    setTriggering(true)
+  const handleSaveAzure = async () => {
+    if (!id) return
+    setSavingConfig(true)
     try {
-      await triggerDiscovery.mutateAsync([connector.connectorType])
-      toast.success(`Discovery scan started for ${connector.displayName}`)
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to trigger discovery')
+      await discoveryService.updateConnector(id, {
+        displayName: azureForm.displayName.trim() || 'Azure Entra ID',
+        config: {
+          tenantId: azureForm.tenantId.trim(),
+          clientId: azureForm.clientId.trim(),
+          ...(azureForm.clientSecret.trim() ? { clientSecret: azureForm.clientSecret.trim() } : {}),
+          subscriptionId: azureForm.subscriptionId.trim(),
+        },
+      })
+      toast.success('Azure connector saved')
+      setAzureForm((f) => ({ ...f, clientSecret: '' }))
+      void queryClient.invalidateQueries({ queryKey: ['connector', id] })
+      void queryClient.invalidateQueries({ queryKey: ['connectors'] })
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to save connector')
     } finally {
-      setTriggering(false)
+      setSavingConfig(false)
+    }
+  }
+
+  const handleSaveAws = async () => {
+    if (!id) return
+    setSavingConfig(true)
+    try {
+      await discoveryService.updateConnector(id, {
+        displayName: awsForm.displayName.trim() || 'AWS Organization',
+        config: {
+          accessKeyId: awsForm.accessKeyId.trim(),
+          ...(awsForm.secretAccessKey.trim() ? { secretAccessKey: awsForm.secretAccessKey.trim() } : {}),
+          region: awsForm.region.trim() || 'us-east-1',
+          roleArn: awsForm.roleArn.trim(),
+          externalId: awsForm.externalId.trim(),
+        },
+      })
+      toast.success('AWS connector saved')
+      setAwsForm((f) => ({ ...f, secretAccessKey: '' }))
+      void queryClient.invalidateQueries({ queryKey: ['connector', id] })
+      void queryClient.invalidateQueries({ queryKey: ['connectors'] })
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to save connector')
+    } finally {
+      setSavingConfig(false)
     }
   }
 
@@ -84,11 +139,52 @@ export default function ConnectorDetail() {
     enabled:  !!id,
   })
 
+  useEffect(() => {
+    if (!connector) return
+    if (connector.connectorType === 'CLOUD_AZURE') {
+      setAzureForm({
+        displayName: connector.displayName,
+        tenantId: connector.config.tenantId ?? '',
+        clientId: connector.config.clientId ?? '',
+        clientSecret: '',
+        subscriptionId: connector.config.subscriptionId ?? '',
+      })
+    }
+    if (connector.connectorType === 'CLOUD_AWS') {
+      setAwsForm({
+        displayName: connector.displayName,
+        accessKeyId: connector.config.accessKeyId ?? '',
+        secretAccessKey: '',
+        region: connector.config.region ?? 'us-east-1',
+        roleArn: connector.config.roleArn ?? '',
+        externalId: connector.config.externalId ?? '',
+      })
+    }
+  }, [connector])
+
   const { data: nhis, isLoading: loadingNHIs } = useQuery({
     queryKey: ['connector-nhis', id],
     queryFn:  () => nhiService.list({ sourceConnector: id, limit: 100 }),
     enabled:  !!id,
   })
+
+  const handleForceRescan = async () => {
+    if (!id || !connector) return
+    setTriggering(true)
+    try {
+      await triggerDiscovery.mutateAsync({ connectorId: connector.connectorId, connectors: [connector.connectorType] })
+      toast.success(`Discovery scan started for ${connector.displayName}`)
+      window.setTimeout(() => {
+        void queryClient.invalidateQueries({ queryKey: ['connector-nhis', id] })
+        void queryClient.invalidateQueries({ queryKey: ['connector', id] })
+        void queryClient.invalidateQueries({ queryKey: ['discovery-runs'] })
+      }, 4000)
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to trigger discovery')
+    } finally {
+      setTriggering(false)
+    }
+  }
 
   if (loadingConnector) return <div className="flex justify-center py-24"><Spinner size="lg" /></div>
   if (!connector) return <div className="text-center py-24 text-muted">Connector not found.</div>
@@ -322,14 +418,45 @@ export default function ConnectorDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>Connection Configuration</CardHeader>
-              <div className="space-y-4 py-4">
-                {Object.entries(connector.config).map(([key, val]) => (
-                  <div key={key} className="flex flex-col gap-1 border-b border-surface-border pb-3 last:border-0">
-                    <span className="font-mono text-[9px] uppercase tracking-wider text-muted">{key.replace(/([A-Z])/g, ' $1')}</span>
-                    <span className="text-xs text-bright font-mono">{key.toLowerCase().includes('secret') || key.toLowerCase().includes('key') ? '••••••••••••••••' : val}</span>
+              {connector.connectorType === 'CLOUD_AZURE' ? (
+                <div className="space-y-4 py-4">
+                  <p className="text-sm text-slate-600">
+                    Paste the app registration values from Azure. Leave the secret blank to keep the one already stored.
+                  </p>
+                  <Input label="Display name" value={azureForm.displayName} onChange={(e) => setAzureForm((f) => ({ ...f, displayName: e.target.value }))} />
+                  <Input label="Directory (tenant) ID" value={azureForm.tenantId} onChange={(e) => setAzureForm((f) => ({ ...f, tenantId: e.target.value }))} />
+                  <Input label="Application (client) ID" value={azureForm.clientId} onChange={(e) => setAzureForm((f) => ({ ...f, clientId: e.target.value }))} />
+                  <Input label="Client secret" type="password" value={azureForm.clientSecret} onChange={(e) => setAzureForm((f) => ({ ...f, clientSecret: e.target.value }))} placeholder={connector.config.clientSecret ? '••••••••  (unchanged unless you type a new value)' : 'Paste secret value'} />
+                  <Input label="Subscription ID (optional)" value={azureForm.subscriptionId} onChange={(e) => setAzureForm((f) => ({ ...f, subscriptionId: e.target.value }))} />
+                  <div className="flex justify-end">
+                    <Button variant="primary" size="sm" loading={savingConfig} onClick={handleSaveAzure}>Save Azure config</Button>
                   </div>
-                ))}
-              </div>
+                </div>
+              ) : connector.connectorType === 'CLOUD_AWS' ? (
+                <div className="space-y-4 py-4">
+                  <p className="text-sm text-slate-600">
+                    Use a read-only access key. Leave the secret blank to keep the stored key.
+                  </p>
+                  <Input label="Display name" value={awsForm.displayName} onChange={(e) => setAwsForm((f) => ({ ...f, displayName: e.target.value }))} />
+                  <Input label="Access key ID" value={awsForm.accessKeyId} onChange={(e) => setAwsForm((f) => ({ ...f, accessKeyId: e.target.value }))} />
+                  <Input label="Secret access key" type="password" value={awsForm.secretAccessKey} onChange={(e) => setAwsForm((f) => ({ ...f, secretAccessKey: e.target.value }))} placeholder={connector.config.secretAccessKey ? '••••••••  (unchanged unless you type a new value)' : 'Paste secret'} />
+                  <Input label="Region" value={awsForm.region} onChange={(e) => setAwsForm((f) => ({ ...f, region: e.target.value }))} />
+                  <Input label="Assume role ARN" value={awsForm.roleArn} onChange={(e) => setAwsForm((f) => ({ ...f, roleArn: e.target.value }))} />
+                  <Input label="External ID" value={awsForm.externalId} onChange={(e) => setAwsForm((f) => ({ ...f, externalId: e.target.value }))} />
+                  <div className="flex justify-end">
+                    <Button variant="primary" size="sm" loading={savingConfig} onClick={handleSaveAws}>Save AWS config</Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 py-4">
+                  {Object.entries(connector.config).map(([key, val]) => (
+                    <div key={key} className="flex flex-col gap-1 border-b border-surface-border pb-3 last:border-0">
+                      <span className="font-mono text-[9px] uppercase tracking-wider text-muted">{key.replace(/([A-Z])/g, ' $1')}</span>
+                      <span className="text-xs text-bright font-mono">{key.toLowerCase().includes('secret') || key.toLowerCase().includes('key') ? '••••••••••••••••' : val}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
 
             <div className="space-y-6">

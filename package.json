@@ -10,6 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-ec2": "^3.1116.0",
+    "@aws-sdk/client-ecs": "^3.1116.0",
+    "@aws-sdk/client-eks": "^3.1116.0",
+    "@aws-sdk/client-iam": "^3.1116.0",
+    "@aws-sdk/client-lambda": "^3.1116.0",
+    "@aws-sdk/client-secrets-manager": "^3.1116.0",
+    "@aws-sdk/client-sts": "^3.1116.0",
     "@azure/msal-browser": "^5.7.0",
     "@azure/msal-react": "^5.3.0",
     "@headlessui/react": "^2.2.10",

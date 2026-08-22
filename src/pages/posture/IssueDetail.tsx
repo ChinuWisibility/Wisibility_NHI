@@ -154,6 +154,31 @@ export default function IssueDetail() {
                 <p>2. Restrict each to its own env scope</p>
                 <p>3. Rotate credentials in all environments</p>
               </>}
+              {issue.issueType === 'LONG_LIVED_SECRET' && <>
+                <p>1. Rotate the client secret or certificate</p>
+                <p>2. Prefer managed identity or federated credentials</p>
+                <p>3. Remove unused credential objects from the app registration</p>
+              </>}
+              {issue.issueType === 'KEY_VAULT_ACCESS' && <>
+                <p>1. Confirm the NHI still needs Key Vault access</p>
+                <p>2. Scope the role to a single vault or secret set</p>
+                <p>3. Replace standing Secrets User with just-in-time access if possible</p>
+              </>}
+              {issue.issueType === 'ORPHANED_IDENTITY' && <>
+                <p>1. Confirm no workload still references this UAMI</p>
+                <p>2. Remove unused Azure RBAC assignments</p>
+                <p>3. Delete the unattached identity if it is no longer required</p>
+              </>}
+              {issue.issueType === 'BROAD_FEDERATION' && <>
+                <p>1. Tighten the federated credential subject to one repo/environment</p>
+                <p>2. Remove wildcard subjects</p>
+                <p>3. Re-test the intended CI/CD workflow only</p>
+              </>}
+              {issue.issueType === 'EXTERNAL_FEDERATION' && <>
+                <p>1. Confirm the external issuer is an approved CI/CD system</p>
+                <p>2. Reduce Contributor/Owner to the smallest resource-group scope</p>
+                <p>3. Add Conditional Access for workload identities where licensed</p>
+              </>}
             </div>
           </Card>
         </div>

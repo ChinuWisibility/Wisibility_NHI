@@ -32,6 +32,10 @@ export default function CommandCenter() {
   const { data: summary, isLoading } = useQuery({
     queryKey: ['nhi-summary'],
     queryFn: nhiService.getSummary,
+    retry: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   const total = summary?.total ?? SHOWCASE.total

@@ -23,6 +23,8 @@ export function useTriggerDiscovery() {
     onSuccess: ({ runId }) => {
       setActiveRun(runId)
       qc.invalidateQueries({ queryKey: ['discovery-runs'] })
+      qc.invalidateQueries({ queryKey: ['connectors'] })
+      qc.invalidateQueries({ queryKey: ['nhi-summary'] })
     },
   })
 }
@@ -35,7 +37,12 @@ export function useDiscoveryRuns() {
 }
 
 export function useTestConnector() {
+  const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => discoveryService.testConnector(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['connectors'] })
+      qc.invalidateQueries({ queryKey: ['connector'] })
+    },
   })
 }

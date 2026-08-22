@@ -1,0 +1,7 @@
+name,type,auth,expected_risk,expected_rules
+NHI-LAB-svc-backup,IAM user,Access key,HIGH,NHI-AWS-001
+NHI-LAB-AdminAutomationRole,IAM role,STS / Lambda,CRITICAL,NHI-AWS-005
+NHI-LAB-PaymentProcessorRole,IAM role,STS / Lambda,HIGH,NHI-AWS-012
+NHI-LAB-ProdWebRole,IAM role,STS / EC2,LOW/MEDIUM,
+NHI-LAB-GitHubDeployRole,IAM role,OIDC,HIGH,NHI-AWS-021
+AWSServiceRoleFor*,Service-linked role,AWS managed,LOW,NHI-AWS-023

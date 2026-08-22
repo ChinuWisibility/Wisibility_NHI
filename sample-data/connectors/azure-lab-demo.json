@@ -1,0 +1,97 @@
+[
+  {
+    "displayName": "NHI-LAB-PaymentService",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "OAUTH_CLIENT",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "ELEVATED",
+    "breadthScore": 45,
+    "isShared": false,
+    "isHardcoded": true,
+    "ownerTeam": "Payments",
+    "sourceConnector": "azure-demo",
+    "tags": {
+      "platform": "azure",
+      "lab": "true",
+      "access": "Storage Blob Data Reader",
+      "auth": "client-secret"
+    }
+  },
+  {
+    "displayName": "NHI-LAB-LegacyService",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "OAUTH_CLIENT",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "ELEVATED",
+    "breadthScore": 70,
+    "isShared": false,
+    "isHardcoded": true,
+    "ownerTeam": "Legacy Apps",
+    "sourceConnector": "azure-demo",
+    "tags": {
+      "platform": "azure",
+      "lab": "true",
+      "access": "Contributor on rg-nhi-demo",
+      "auth": "long-lived-secret"
+    }
+  },
+  {
+    "displayName": "NHI-LAB-AdminAutomation",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "OAUTH_CLIENT",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "ADMIN",
+    "breadthScore": 95,
+    "isShared": false,
+    "isHardcoded": true,
+    "ownerTeam": "",
+    "sourceConnector": "azure-demo",
+    "tags": {
+      "platform": "azure",
+      "lab": "true",
+      "access": "Subscription Contributor",
+      "risk_reasons": "Subscription-wide Contributor"
+    }
+  },
+  {
+    "displayName": "NHI-LAB-DormantService",
+    "nhiType": "SERVICE_ACCOUNT",
+    "credentialType": "OAUTH_CLIENT",
+    "status": "DORMANT",
+    "environment": "DEV",
+    "privilegeLevel": "READ_ONLY",
+    "breadthScore": 20,
+    "isShared": false,
+    "isHardcoded": false,
+    "ownerTeam": "",
+    "sourceConnector": "azure-demo",
+    "tags": {
+      "platform": "azure",
+      "lab": "true",
+      "access": "Subscription Reader"
+    }
+  },
+  {
+    "displayName": "NHI-LAB-GitHubDeploy",
+    "nhiType": "OIDC",
+    "credentialType": "TOKEN",
+    "status": "ACTIVE",
+    "environment": "PROD",
+    "privilegeLevel": "ELEVATED",
+    "breadthScore": 75,
+    "isShared": false,
+    "isHardcoded": false,
+    "ownerTeam": "Platform",
+    "sourceConnector": "azure-demo",
+    "tags": {
+      "platform": "azure",
+      "lab": "true",
+      "auth": "federated",
+      "fic_issuers": "https://token.actions.githubusercontent.com/",
+      "fic_subjects": "repo:wisbility/nhi-lab:environment:production"
+    }
+  }
+]

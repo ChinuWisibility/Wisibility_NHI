@@ -1,0 +1,31 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "WisibilityNHIRead",
+      "Effect": "Allow",
+      "Action": [
+        "iam:Get*",
+        "iam:List*",
+        "iam:GenerateServiceLastAccessedDetails",
+        "sts:GetCallerIdentity",
+        "sts:AssumeRole",
+        "ec2:Describe*",
+        "lambda:List*",
+        "lambda:Get*",
+        "ecs:List*",
+        "ecs:Describe*",
+        "eks:List*",
+        "eks:Describe*",
+        "secretsmanager:ListSecrets",
+        "secretsmanager:DescribeSecret",
+        "access-analyzer:List*",
+        "access-analyzer:Get*",
+        "organizations:ListAccounts",
+        "organizations:DescribeOrganization",
+        "cloudtrail:LookupEvents"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

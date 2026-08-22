@@ -5,6 +5,11 @@ export type PostureIssueCategory =
   | 'ENV_NOT_SEGREGATED'
   | 'PLAINTEXT_FOUND'
   | 'NO_OWNER'
+  | 'LONG_LIVED_SECRET'
+  | 'KEY_VAULT_ACCESS'
+  | 'ORPHANED_IDENTITY'
+  | 'BROAD_FEDERATION'
+  | 'EXTERNAL_FEDERATION'
 
 export type PostureIssueSeverity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'
 

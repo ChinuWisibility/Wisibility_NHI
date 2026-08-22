@@ -11,11 +11,14 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, subtitle, actions, breadcrumbs }: PageHeaderProps) {
   const setBreadcrumbs = useUIStore((s) => s.setBreadcrumbs)
+  const crumbKey = JSON.stringify(breadcrumbs ?? [])
 
   useEffect(() => {
     if (breadcrumbs) setBreadcrumbs(breadcrumbs)
     return () => setBreadcrumbs([])
-  }, [breadcrumbs, setBreadcrumbs])
+    // Compare by value so parent re-renders with a new array literal do not retrigger.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [crumbKey, setBreadcrumbs])
 
   return (
     <div className="flex items-start justify-between mb-6">

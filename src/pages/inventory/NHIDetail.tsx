@@ -25,6 +25,10 @@ export default function NHIDetail() {
   if (!data) return <p className="text-xs text-muted p-6">NHI not found.</p>
 
   const orphan = !data.ownerTeam
+  const azure = data.tags.platform === 'azure'
+  const aws = data.tags.platform === 'aws'
+  const cloud = azure || aws
+  const split = (value?: string) => (value ? value.split('|').map((s) => s.trim()).filter(Boolean) : [])
 
   return (
     <div className="animate-fade-up max-w-5xl">
@@ -134,10 +138,92 @@ export default function NHIDetail() {
         </Card>
       )}
 
+      {tab === 'Access' && cloud && (
+        <Card>
+          <CardHeader>Authorization</CardHeader>
+          <dl className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
+            <div>
+              <dt className="text-[11px] font-bold uppercase text-slate-500">{aws ? 'IAM policies' : 'Azure RBAC'}</dt>
+              <dd className="mt-1 space-y-1">
+                {(aws ? split(data.tags.policies) : split(data.tags.rbac)).length
+                  ? (aws ? split(data.tags.policies) : split(data.tags.rbac)).map((row) => (
+                    <p key={row} className="font-medium text-slate-900">{row}</p>
+                  ))
+                  : <p className="text-slate-500">No assignments discovered</p>}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-bold uppercase text-slate-500">{aws ? 'Trust' : 'Sensitive access'}</dt>
+              <dd className="mt-1">
+                {aws ? (
+                  <>
+                    <p>Principals: {data.tags.trust_principals || '—'}</p>
+                    <p>Services: {data.tags.trust_services || '—'}</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Key Vault: {data.tags.kv_access === 'yes' ? 'Yes' : 'No'}</p>
+                    <p>Storage: {data.tags.storage_access === 'yes' ? 'Yes' : 'No'}</p>
+                  </>
+                )}
+              </dd>
+            </div>
+          </dl>
+        </Card>
+      )}
+
+      {tab === 'Credentials' && cloud && (
+        <Card>
+          <CardHeader>Authentication metadata</CardHeader>
+          <p className="text-xs text-slate-500 mb-3">Secret values are never collected. Only type, age, and last-used metadata.</p>
+          <dl className="grid grid-cols-2 gap-4 text-sm">
+            {(aws ? [
+              ['Method', data.nhiType === 'OIDC' ? 'OIDC / federation' : data.tags.aws_kind === 'user' ? 'IAM user access key' : 'Temporary STS (role)'],
+              ['Account', data.tags.account || '—'],
+              ['ARN', data.tags.arn || '—'],
+              ['Access keys', data.tags.access_key_count || '0'],
+              ['Key age (days)', data.tags.key_age_days || '—'],
+              ['Last used (days)', data.tags.last_used_days || '—'],
+            ] : [
+              ['Method', data.nhiType === 'OIDC' ? 'Federated identity' : data.nhiType === 'IAM_ROLE' ? 'Managed identity' : 'Client secret / certificate'],
+              ['Client secrets', data.tags.secret_count || '0'],
+              ['Certificates', data.tags.cert_count || '0'],
+              ['Federated credentials', data.tags.fic_count || '0'],
+              ['Secret age (days)', data.tags.secret_age_days || '—'],
+              ['Expires', data.certExpiry ? formatDate(data.certExpiry) : '—'],
+              ['Issuers', data.tags.fic_issuers || '—'],
+              ['Subjects', data.tags.fic_subjects || '—'],
+            ]).map(([k, v]) => (
+              <div key={k}>
+                <dt className="text-[11px] font-bold uppercase text-slate-500">{k}</dt>
+                <dd className="font-semibold text-slate-900 mt-0.5 break-all">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </Card>
+      )}
+
+      {tab === 'Lineage' && cloud && (
+        <Card>
+          <CardHeader>Workloads and blast radius</CardHeader>
+          <p className="text-sm text-slate-700 mb-3">
+            {data.tags.workloads || 'No attached VM, App Service, or Function discovered.'}
+          </p>
+          <p className="text-xs text-slate-500">
+            Identity type: {data.tags.sp_type || data.tags.aws_kind || data.nhiType}
+            {data.tags.attachment_count ? ` · attached workloads: ${data.tags.attachment_count}` : ''}
+          </p>
+        </Card>
+      )}
+
       {tab === 'Risk' && (
         <Card>
           <CardHeader>Risk contributors</CardHeader>
           <ul className="space-y-2 text-sm text-slate-700">
+            {cloud && split(data.tags.risk_reasons).map((reason) => <li key={reason}>{reason}</li>)}
+            {cloud && data.tags.findings && (
+              <li>Rules: {data.tags.findings}</li>
+            )}
             {orphan && <li>No owner — production identities without attribution raise risk automatically.</li>}
             {data.isHardcoded && <li>Credential appears hardcoded / not vaulted.</li>}
             {data.isShared && <li>Shared across consumers — blast radius is wider.</li>}
@@ -161,7 +247,10 @@ export default function NHIDetail() {
         </Card>
       )}
 
-      {!['Overview', 'Ownership', 'Risk', 'Lifecycle'].includes(tab) && (
+      {!(
+        tab === 'Overview' || tab === 'Ownership' || tab === 'Risk' || tab === 'Lifecycle'
+        || (cloud && (tab === 'Access' || tab === 'Credentials' || tab === 'Lineage'))
+      ) && (
         <Card>
           <CardHeader>{tab}</CardHeader>
           <p className="text-sm text-slate-600 mb-4">

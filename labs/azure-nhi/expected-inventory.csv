@@ -1,0 +1,11 @@
+name,type,auth,access,expected_risk,expected_rules
+NHI-LAB-PaymentService,Service Principal,Client Secret,Storage Blob Data Reader + Key Vault Secrets User,MEDIUM/HIGH,NHI-AZ-003
+NHI-LAB-LegacyService,Service Principal,Long-lived client secret,Contributor on rg-nhi-apps,HIGH,NHI-AZ-001;NHI-AZ-002
+NHI-LAB-AdminAutomation,Service Principal,Client Secret,Subscription Contributor + production data,CRITICAL,NHI-AZ-002;NHI-AZ-014
+vm-nhi-lab01,System-assigned MI,Managed identity,Storage Blob Data Reader,LOW,NHI-AZ-013
+app-nhi-lab01,System-assigned MI,Managed identity,Storage Blob Data Reader,LOW,NHI-AZ-013
+func-nhi-lab01,System-assigned MI,Managed identity,Key Vault Secrets User,MEDIUM,NHI-AZ-003
+uami-nhi-shared01,User-assigned MI,Managed identity,Key Vault + Storage on VM/App/Function,HIGH,NHI-AZ-006
+NHI-LAB-GitHubDeploy,Service Principal,Federation,Contributor on rg-nhi-apps,HIGH,NHI-AZ-007;NHI-AZ-009
+NHI-LAB-DormantService,Service Principal,None / unused,Subscription Reader,MEDIUM,NHI-AZ-004
+NHI-LAB-BroadFederation,Service Principal,Broad federation subject,Contributor on rg-nhi-apps,HIGH,NHI-AZ-008
