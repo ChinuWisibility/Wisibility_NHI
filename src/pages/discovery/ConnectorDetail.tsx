@@ -63,6 +63,16 @@ export default function ConnectorDetail() {
     roleArn: '',
     externalId: '',
   })
+  const [ociForm, setOciForm] = useState({
+    displayName: '',
+    tenancyOcid: '',
+    userOcid: '',
+    fingerprint: '',
+    privateKey: '',
+    passphrase: '',
+    region: 'us-ashburn-1',
+    compartmentOcid: '',
+  })
   const testConnector = useTestConnector()
   const triggerDiscovery = useTriggerDiscovery()
   const queryClient = useQueryClient()
@@ -133,6 +143,33 @@ export default function ConnectorDetail() {
     }
   }
 
+  const handleSaveOci = async () => {
+    if (!id) return
+    setSavingConfig(true)
+    try {
+      await discoveryService.updateConnector(id, {
+        displayName: ociForm.displayName.trim() || 'OCI Tenancy',
+        config: {
+          tenancyOcid: ociForm.tenancyOcid.trim(),
+          userOcid: ociForm.userOcid.trim(),
+          fingerprint: ociForm.fingerprint.trim(),
+          ...(ociForm.privateKey.trim() ? { privateKey: ociForm.privateKey.trim() } : {}),
+          ...(ociForm.passphrase.trim() ? { passphrase: ociForm.passphrase.trim() } : {}),
+          region: ociForm.region.trim() || 'us-ashburn-1',
+          compartmentOcid: ociForm.compartmentOcid.trim(),
+        },
+      })
+      toast.success('OCI connector saved')
+      setOciForm((f) => ({ ...f, privateKey: '', passphrase: '' }))
+      void queryClient.invalidateQueries({ queryKey: ['connector', id] })
+      void queryClient.invalidateQueries({ queryKey: ['connectors'] })
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : 'Failed to save connector')
+    } finally {
+      setSavingConfig(false)
+    }
+  }
+
   const { data: connector, isLoading: loadingConnector } = useQuery({
     queryKey: ['connector', id],
     queryFn:  () => discoveryService.getConnector(id!),
@@ -158,6 +195,18 @@ export default function ConnectorDetail() {
         region: connector.config.region ?? 'us-east-1',
         roleArn: connector.config.roleArn ?? '',
         externalId: connector.config.externalId ?? '',
+      })
+    }
+    if (connector.connectorType === 'CLOUD_OCI') {
+      setOciForm({
+        displayName: connector.displayName,
+        tenancyOcid: connector.config.tenancyOcid ?? '',
+        userOcid: connector.config.userOcid ?? '',
+        fingerprint: connector.config.fingerprint ?? '',
+        privateKey: '',
+        passphrase: '',
+        region: connector.config.region ?? 'us-ashburn-1',
+        compartmentOcid: connector.config.compartmentOcid ?? '',
       })
     }
   }, [connector])
@@ -445,6 +494,32 @@ export default function ConnectorDetail() {
                   <Input label="External ID" value={awsForm.externalId} onChange={(e) => setAwsForm((f) => ({ ...f, externalId: e.target.value }))} />
                   <div className="flex justify-end">
                     <Button variant="primary" size="sm" loading={savingConfig} onClick={handleSaveAws}>Save AWS config</Button>
+                  </div>
+                </div>
+              ) : connector.connectorType === 'CLOUD_OCI' ? (
+                <div className="space-y-4 py-4">
+                  <p className="text-sm text-slate-600">
+                    Use a read-only API key. Leave the private key blank to keep the stored PEM.
+                  </p>
+                  <Input label="Display name" value={ociForm.displayName} onChange={(e) => setOciForm((f) => ({ ...f, displayName: e.target.value }))} />
+                  <Input label="Tenancy OCID" value={ociForm.tenancyOcid} onChange={(e) => setOciForm((f) => ({ ...f, tenancyOcid: e.target.value }))} />
+                  <Input label="User OCID" value={ociForm.userOcid} onChange={(e) => setOciForm((f) => ({ ...f, userOcid: e.target.value }))} />
+                  <Input label="API key fingerprint" value={ociForm.fingerprint} onChange={(e) => setOciForm((f) => ({ ...f, fingerprint: e.target.value }))} />
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold tracking-wide uppercase text-slate-600">API private key (PEM)</label>
+                    <textarea
+                      rows={5}
+                      value={ociForm.privateKey}
+                      onChange={(e) => setOciForm((f) => ({ ...f, privateKey: e.target.value }))}
+                      placeholder={connector.config.privateKey ? '••••••••  (unchanged unless you paste a new PEM)' : '-----BEGIN PRIVATE KEY-----'}
+                      className="w-full bg-white dark:bg-surface-2 border-[1.5px] border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-mono"
+                    />
+                  </div>
+                  <Input label="Passphrase" type="password" value={ociForm.passphrase} onChange={(e) => setOciForm((f) => ({ ...f, passphrase: e.target.value }))} placeholder={connector.config.passphrase ? '••••••••' : 'Optional'} />
+                  <Input label="Home region" value={ociForm.region} onChange={(e) => setOciForm((f) => ({ ...f, region: e.target.value }))} />
+                  <Input label="Compartment OCID" value={ociForm.compartmentOcid} onChange={(e) => setOciForm((f) => ({ ...f, compartmentOcid: e.target.value }))} />
+                  <div className="flex justify-end">
+                    <Button variant="primary" size="sm" loading={savingConfig} onClick={handleSaveOci}>Save OCI config</Button>
                   </div>
                 </div>
               ) : (

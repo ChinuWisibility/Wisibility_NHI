@@ -16,6 +16,7 @@ import {
 import { discoveryService } from '@/services/discovery.service'
 import { AddAzureConnectorModal } from '@/components/discovery/AddAzureConnectorModal'
 import { AddAwsConnectorModal } from '@/components/discovery/AddAwsConnectorModal'
+import { AddOciConnectorModal } from '@/components/discovery/AddOciConnectorModal'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
@@ -29,6 +30,7 @@ export default function ConnectorHub() {
   const [testingId, setTestingId] = useState<string | null>(null)
   const [addAzureOpen, setAddAzureOpen] = useState(false)
   const [addAwsOpen, setAddAwsOpen] = useState(false)
+  const [addOciOpen, setAddOciOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -105,6 +107,7 @@ export default function ConnectorHub() {
             </Button>
             <Button variant="secondary" size="sm" onClick={() => setAddAzureOpen(true)}>+ Add Azure</Button>
             <Button variant="secondary" size="sm" onClick={() => setAddAwsOpen(true)}>+ Add AWS</Button>
+            <Button variant="secondary" size="sm" onClick={() => setAddOciOpen(true)}>+ Add OCI</Button>
             <Button variant="primary" size="sm" loading={triggering} onClick={handleTriggerAll}>
               ▶ Trigger All
             </Button>
@@ -208,6 +211,14 @@ export default function ConnectorHub() {
       <AddAwsConnectorModal
         open={addAwsOpen}
         onClose={() => setAddAwsOpen(false)}
+        onCreated={(id) => {
+          void queryClient.invalidateQueries({ queryKey: ['connectors'] })
+          navigate(`/discovery/connectors/${id}?tab=config`)
+        }}
+      />
+      <AddOciConnectorModal
+        open={addOciOpen}
+        onClose={() => setAddOciOpen(false)}
         onCreated={(id) => {
           void queryClient.invalidateQueries({ queryKey: ['connectors'] })
           navigate(`/discovery/connectors/${id}?tab=config`)

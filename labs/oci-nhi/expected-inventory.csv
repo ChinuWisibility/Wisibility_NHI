@@ -1,0 +1,8 @@
+displayName,kind,expectedRisk,notes
+NHI-LAB-PaymentService,user,HIGH,API key (if uploaded) or lab-named service user
+NHI-LAB-AdminAutomation,user,CRITICAL,manage all-resources via group policy
+NHI-LAB-LegacyService,user,MEDIUM,Lab-named user without admin
+NHI-LAB-DormantService,user,MEDIUM,Lab-named; Critical if keyed + unused
+NHI-LAB-PaymentCompute,dynamic-group,HIGH,Tenancy-wide matching rule + secret-family
+NHI-LAB-AdminFleet,dynamic-group,CRITICAL,Tenancy-wide matching + manage all-resources
+NHI-LAB-GitHubDeploy,dynamic-group,MEDIUM,CI-shaped matching rule

@@ -4,10 +4,11 @@ import type { Request, Response } from 'express'
 import { prisma } from '../lib/prisma.js'
 import { testAzureConnection } from '../services/connectors/azure.connector.js'
 import { testAwsConnection } from '../services/connectors/aws.connector.js'
+import { testOciConnection } from '../services/connectors/oci.connector.js'
 
 const router = Router()
 
-const SECRET_KEYS = ['clientsecret', 'secretaccesskey', 'sessiontoken', 'password', 'privatekey']
+const SECRET_KEYS = ['clientsecret', 'secretaccesskey', 'sessiontoken', 'password', 'privatekey', 'passphrase']
 
 function isSecretKey(key: string) {
   const k = key.toLowerCase()
@@ -114,6 +115,14 @@ router.post('/:id/test', async (req: Request, res: Response) => {
     message = connected
       ? `Connected to ${result.tenantName || 'AWS'}`
       : (result.error || 'AWS connection failed')
+  } else if (connector.connectorType === 'CLOUD_OCI') {
+    const result = await testOciConnection(connector.config)
+    connected = result.connected
+    latencyMs = result.latencyMs
+    error = result.error
+    message = connected
+      ? `Connected to ${result.tenantName || 'OCI'}`
+      : (result.error || 'OCI connection failed')
   } else {
     const started = Date.now()
     await new Promise((r) => setTimeout(r, 40))

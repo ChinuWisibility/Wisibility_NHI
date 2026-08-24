@@ -107,7 +107,7 @@ export interface Alert {
 
 // ── Connectors ────────────────────────────────────────────────────────────────
 export type ConnectorType =
-  | 'AD' | 'CLOUD_AWS' | 'CLOUD_AZURE' | 'CLOUD_GCP'
+  | 'AD' | 'CLOUD_AWS' | 'CLOUD_AZURE' | 'CLOUD_GCP' | 'CLOUD_OCI'
   | 'VAULT_HASHICORP' | 'VAULT_CYBERARK' | 'VAULT_AWS_SM'
   | 'GITHUB' | 'GITLAB' | 'KUBERNETES' | 'DATABASE'
   | 'CICD_JENKINS' | 'CICD_AZURE_DEVOPS' | 'SAAS' | 'DEMO'

@@ -8,6 +8,7 @@ import { generateDemoNHIs } from '../services/demo-generator.js'
 import { processNHIs } from '../services/nhi-ingest.js'
 import { discoverAzureNHIs, parseAzureConfig } from '../services/connectors/azure.connector.js'
 import { discoverAwsNHIs, parseAwsConfig } from '../services/connectors/aws.connector.js'
+import { discoverOciNHIs, parseOciConfig } from '../services/connectors/oci.connector.js'
 
 const router = Router()
 const upload = multer({ storage: multer.memoryStorage() })
@@ -139,6 +140,22 @@ async function runAwsDiscovery(runId: string, connector: { connectorId: string; 
   }
 }
 
+async function runOciDiscovery(runId: string, connector: { connectorId: string; connectorType: string; config: unknown }) {
+  try {
+    await persistCloudScan(runId, connector, 'oci-connector', await discoverOciNHIs(connector.config, connector.connectorId))
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'OCI discovery failed'
+    await prisma.connectorConfig.update({
+      where: { connectorId: connector.connectorId },
+      data:  { status: 'ERROR' },
+    }).catch(() => undefined)
+    await prisma.discoveryRun.update({
+      where: { runId },
+      data:  { status: 'FAILED', completedAt: new Date(), errors: [message] },
+    })
+  }
+}
+
 router.post('/trigger', async (req: Request, res: Response) => {
   const { connectors, connectorId } = req.body as {
     connectors?: string[] | 'ALL'
@@ -183,6 +200,8 @@ router.post('/trigger', async (req: Request, res: Response) => {
       setTimeout(() => { void runAzureDiscovery(run.runId, connector) }, 50)
     } else if (connector.connectorType === 'CLOUD_AWS' && parseAwsConfig(connector.config)) {
       setTimeout(() => { void runAwsDiscovery(run.runId, connector) }, 50)
+    } else if (connector.connectorType === 'CLOUD_OCI' && parseOciConfig(connector.config)) {
+      setTimeout(() => { void runOciDiscovery(run.runId, connector) }, 50)
     } else if (connector.connectorType === 'DEMO') {
       setTimeout(async () => {
         try {
@@ -263,6 +282,17 @@ router.post('/trigger', async (req: Request, res: Response) => {
             status:      'FAILED',
             completedAt: new Date(),
             errors:      ['Add Access Key ID, Secret Access Key, and Region on this AWS connector, then Test and scan again.'],
+          },
+        })
+      }, 200)
+    } else if (connector.connectorType === 'CLOUD_OCI') {
+      setTimeout(async () => {
+        await prisma.discoveryRun.update({
+          where: { runId: run.runId },
+          data:  {
+            status:      'FAILED',
+            completedAt: new Date(),
+            errors:      ['Add Tenancy OCID, User OCID, fingerprint, API private key, and home region on this OCI connector, then Test and scan again.'],
           },
         })
       }, 200)

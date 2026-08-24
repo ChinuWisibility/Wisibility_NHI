@@ -1,0 +1,2 @@
+Allow group wisibility-nhi-readers to inspect all-resources in tenancy
+Allow group wisibility-nhi-readers to read users in tenancy

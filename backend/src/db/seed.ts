@@ -454,6 +454,12 @@ export const Connectors: ConnectorConfig[] = [
     lastTestAt: daysAgo(2), lastRunAt: hoursAgo(4), createdAt: daysAgo(180),
   },
   {
+    connectorId: 'conn-oci-01', connectorType: 'CLOUD_OCI',
+    displayName: 'OCI Tenancy (prod)', status: 'ACTIVE',
+    config: { region: 'us-ashburn-1' },
+    lastTestAt: daysAgo(2), lastRunAt: hoursAgo(4), createdAt: daysAgo(160),
+  },
+  {
     connectorId: 'conn-vault-01', connectorType: 'VAULT_HASHICORP',
     displayName: 'HashiCorp Vault (prod)', status: 'ACTIVE',
     config: { address: 'https://vault.nhi-alps.io', mountPath: 'secret' },

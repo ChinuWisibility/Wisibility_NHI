@@ -27,7 +27,8 @@ export default function NHIDetail() {
   const orphan = !data.ownerTeam
   const azure = data.tags.platform === 'azure'
   const aws = data.tags.platform === 'aws'
-  const cloud = azure || aws
+  const oci = data.tags.platform === 'oci'
+  const cloud = azure || aws || oci
   const split = (value?: string) => (value ? value.split('|').map((s) => s.trim()).filter(Boolean) : [])
 
   return (
@@ -143,22 +144,31 @@ export default function NHIDetail() {
           <CardHeader>Authorization</CardHeader>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
             <div>
-              <dt className="text-[11px] font-bold uppercase text-slate-500">{aws ? 'IAM policies' : 'Azure RBAC'}</dt>
+              <dt className="text-[11px] font-bold uppercase text-slate-500">
+                {aws ? 'IAM policies' : oci ? 'IAM policies' : 'Azure RBAC'}
+              </dt>
               <dd className="mt-1 space-y-1">
-                {(aws ? split(data.tags.policies) : split(data.tags.rbac)).length
-                  ? (aws ? split(data.tags.policies) : split(data.tags.rbac)).map((row) => (
+                {(aws || oci ? split(data.tags.policies) : split(data.tags.rbac)).length
+                  ? (aws || oci ? split(data.tags.policies) : split(data.tags.rbac)).map((row) => (
                     <p key={row} className="font-medium text-slate-900">{row}</p>
                   ))
                   : <p className="text-slate-500">No assignments discovered</p>}
               </dd>
             </div>
             <div>
-              <dt className="text-[11px] font-bold uppercase text-slate-500">{aws ? 'Trust' : 'Sensitive access'}</dt>
+              <dt className="text-[11px] font-bold uppercase text-slate-500">
+                {aws ? 'Trust' : oci ? 'Groups / matching rule' : 'Sensitive access'}
+              </dt>
               <dd className="mt-1">
                 {aws ? (
                   <>
                     <p>Principals: {data.tags.trust_principals || '—'}</p>
                     <p>Services: {data.tags.trust_services || '—'}</p>
+                  </>
+                ) : oci ? (
+                  <>
+                    <p>Groups: {data.tags.groups || '—'}</p>
+                    <p>Matching rule: {data.tags.matching_rule || '—'}</p>
                   </>
                 ) : (
                   <>
@@ -177,7 +187,16 @@ export default function NHIDetail() {
           <CardHeader>Authentication metadata</CardHeader>
           <p className="text-xs text-slate-500 mb-3">Secret values are never collected. Only type, age, and last-used metadata.</p>
           <dl className="grid grid-cols-2 gap-4 text-sm">
-            {(aws ? [
+            {(oci ? [
+              ['Method', data.tags.oci_kind === 'dynamic-group' ? 'Instance / resource principal' : data.tags.oci_kind === 'identity-provider' ? 'Federation' : 'IAM user API key'],
+              ['Tenancy', data.tags.tenancy || '—'],
+              ['OCID', data.tags.ocid || '—'],
+              ['API keys', data.tags.api_key_count || '0'],
+              ['Auth tokens', data.tags.auth_token_count || '0'],
+              ['Customer secret keys', data.tags.customer_secret_key_count || '0'],
+              ['Key age (days)', data.tags.key_age_days || '—'],
+              ['Last used (days)', data.tags.last_used_days || '—'],
+            ] : aws ? [
               ['Method', data.nhiType === 'OIDC' ? 'OIDC / federation' : data.tags.aws_kind === 'user' ? 'IAM user access key' : 'Temporary STS (role)'],
               ['Account', data.tags.account || '—'],
               ['ARN', data.tags.arn || '—'],
@@ -207,10 +226,10 @@ export default function NHIDetail() {
         <Card>
           <CardHeader>Workloads and blast radius</CardHeader>
           <p className="text-sm text-slate-700 mb-3">
-            {data.tags.workloads || 'No attached VM, App Service, or Function discovered.'}
+            {data.tags.workloads || 'No attached VM, App Service, Function, or compute instance discovered.'}
           </p>
           <p className="text-xs text-slate-500">
-            Identity type: {data.tags.sp_type || data.tags.aws_kind || data.nhiType}
+            Identity type: {data.tags.sp_type || data.tags.aws_kind || data.tags.oci_kind || data.nhiType}
             {data.tags.attachment_count ? ` · attached workloads: ${data.tags.attachment_count}` : ''}
           </p>
         </Card>

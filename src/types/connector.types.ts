@@ -3,6 +3,7 @@ export type ConnectorType =
   | 'CLOUD_AWS'
   | 'CLOUD_AZURE'
   | 'CLOUD_GCP'
+  | 'CLOUD_OCI'
   | 'VAULT_HASHICORP'
   | 'VAULT_CYBERARK'
   | 'VAULT_AWS_SM'
